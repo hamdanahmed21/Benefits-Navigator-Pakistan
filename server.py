@@ -10,7 +10,7 @@ CORS(app)
 # Reads from environment variable on Render
 # For local development, replace None with your key as a fallback:
 # os.environ.get("GEMINI_API_KEY", "AIza...")
-API_KEY = os.environ.get("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY_HERE")
+API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6KyKjLhSL5FqjcErLLhbglDNLJAwNYx9K0zcs8ryT9skA")
 
 SYSTEM_PROMPT = """You are Benefits Navigator Pakistan — a warm, patient, and knowledgeable AI assistant helping people in Pakistan understand what public support programs they MAY qualify for, and guiding them with clear next steps.
 

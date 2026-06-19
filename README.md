@@ -25,12 +25,6 @@ Millions of Pakistanis are eligible for government support programs — BISP, Eh
 
 ---
 
-## 📸 Screenshots
-
-> *(Add screenshots of the chatbot here after deployment)*
-
----
-
 ## 🏗️ How It Works
 
 ```
@@ -192,7 +186,6 @@ This tool provides **exploratory guidance only**. It is not an official governme
 - **Track:** Undergraduate
 - **Challenge:** 4 — Fix Systems People Depend On
 - **Direction:** A — Benefits Navigator
-- **Devpost:** *(add your Devpost link here)*
 
 ---
 
