@@ -1,16 +1,15 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from google import genai
-from google.genai import types
+from groq import Groq
 import os
 
 app = Flask(__name__, static_folder=".")
 CORS(app)
 
-# Reads from environment variable on Render
-# For local development, replace None with your key as a fallback:
-# os.environ.get("GEMINI_API_KEY", "AIza...")
-API_KEY = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6KyKjLhSL5FqjcErLLhbglDNLJAwNYx9K0zcs8ryT9skA")
+# Reads from environment variable on Railway
+# For local development, replace None with your key:
+# os.environ.get("GROQ_API_KEY", "gsk_...")
+API_KEY = os.environ.get("GROQ_API_KEY", "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")
 
 SYSTEM_PROMPT = """You are Benefits Navigator Pakistan — a warm, patient, and knowledgeable AI assistant helping people in Pakistan understand what public support programs they MAY qualify for, and guiding them with clear next steps.
 
@@ -100,19 +99,6 @@ CRITICAL RULES:
 - Only cover Pakistan — politely decline other countries"""
 
 
-def build_gemini_history(messages):
-    contents = []
-    for msg in messages:
-        role = "user" if msg["role"] == "user" else "model"
-        contents.append(
-            types.Content(
-                role=role,
-                parts=[types.Part(text=msg["content"])]
-            )
-        )
-    return contents
-
-
 @app.route("/")
 def index():
     return send_from_directory(".", "index.html")
@@ -126,42 +112,42 @@ def chat():
         if not messages:
             return jsonify({"error": "No messages provided"}), 400
 
-        client = genai.Client(api_key=API_KEY)
+        client = Groq(api_key=API_KEY)
 
-        history = build_gemini_history(messages[:-1])
-        last_msg = messages[-1]["content"]
+        # Build messages with system prompt
+        groq_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for msg in messages:
+            groq_messages.append({
+                "role": msg["role"],
+                "content": msg["content"]
+            })
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=history + [
-                types.Content(role="user", parts=[types.Part(text=last_msg)])
-            ],
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=1024,
-                temperature=0.7,
-            )
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=groq_messages,
+            max_tokens=1024,
+            temperature=0.7,
         )
 
-        reply = response.text
+        reply = response.choices[0].message.content
         return jsonify({"reply": reply})
 
     except Exception as e:
         err = str(e)
-        if "API_KEY" in err or "api key" in err.lower() or "401" in err:
-            return jsonify({"error": "Invalid Gemini API key. Check your environment variable."}), 401
+        if "401" in err or "invalid_api_key" in err.lower() or "api key" in err.lower():
+            return jsonify({"error": "Invalid Groq API key. Check your environment variable on Railway."}), 401
         return jsonify({"error": err}), 500
 
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok", "model": "gemini-2.5-flash"})
+    return jsonify({"status": "ok", "model": "llama-3.3-70b-versatile"})
 
 
 if __name__ == "__main__":
     print("\n==========================================")
     print("  Benefits Navigator Pakistan")
-    print("  Powered by Gemini 2.5 Flash")
+    print("  Powered by Llama 3.3 70B via Groq")
     print("==========================================")
     print("  Open this in your browser:")
     print("  --> http://localhost:5000")
