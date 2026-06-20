@@ -6,7 +6,7 @@ import os
 app = Flask(__name__, static_folder=".")
 CORS(app)
 
-API_KEY = os.environ.get("GROQ_API_KEY")
+API_KEY = os.environ.get("GROQ_API_KEY", "YOUR_GROQ_API_KEY_HERE")
 
 SYSTEM_PROMPT = """You are Rahnuma — a caring Pakistani benefits guide. Your name means "guide" in Urdu. You speak like a trusted, knowledgeable friend — warm, clear, and to the point.
 
