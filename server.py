@@ -3,7 +3,7 @@ from flask_cors import CORS
 from groq import Groq
 import os
 
-app = Flask(__name__, static_folder=".")
+app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 
 API_KEY = os.environ.get("GROQ_API_KEY")
@@ -149,6 +149,18 @@ STRICT RULES
 @app.route("/")
 def index():
     return send_from_directory(".", "index.html")
+
+@app.route("/favicon.ico")
+def favicon_ico():
+    return send_from_directory(".", "favicon.ico", mimetype="image/x-icon")
+
+@app.route("/favicon.png")
+def favicon_png():
+    return send_from_directory(".", "favicon.png", mimetype="image/png")
+
+@app.route("/apple-touch-icon.png")
+def apple_touch_icon():
+    return send_from_directory(".", "apple-touch-icon.png", mimetype="image/png")
 
 
 @app.route("/chat", methods=["POST"])
