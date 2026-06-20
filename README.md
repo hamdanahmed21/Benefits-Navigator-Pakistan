@@ -21,7 +21,7 @@ Millions of Pakistanis are eligible for government support programs — BISP, Eh
 
 ## 🖥️ Live Demo
 
-🔗 **[https://benefits-navigator-pakistan.onrender.com](https://benefits-navigator-pakistan.onrender.com)**
+🔗 **[https://benefits-navigator-pakistan-production.up.railway.app/](https://benefits-navigator-pakistan-production.up.railway.app/)**
 
 ---
 
@@ -130,16 +130,6 @@ http://localhost:5000
 
 ---
 
-## ☁️ Deploying to Render (Free)
-
-1. Push this repo to GitHub
-2. Go to [render.com](https://render.com) → New Web Service → Connect repo
-3. Render auto-detects `render.yaml` and configures everything
-4. Add environment variable: `GEMINI_API_KEY` = your `AIza...` key
-5. Deploy — you get a live public URL in ~2 minutes
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -189,4 +179,3 @@ This tool provides **exploratory guidance only**. It is not an official governme
 
 ---
 
-*Built with 🤖 AI and ❤️ for the people of Pakistan.*
