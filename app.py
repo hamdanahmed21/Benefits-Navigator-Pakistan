@@ -180,7 +180,7 @@ def chat():
             return jsonify({"error": "No valid messages provided"}), 400
 
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="llama-3.1-8b-instant",
             messages=groq_messages,
             max_tokens=512,
             temperature=0.2,
