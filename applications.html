@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — My Applications</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── CTA BANNER ── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--accent) 0%, #0a5c34 100%);
+      border-radius: var(--radius-xl);
+      padding: 18px 24px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 28px rgba(13,122,69,0.25);
+      flex-wrap: wrap;
+    }
+    .cta-banner-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .cta-banner-text { flex: 1; min-width: 200px; }
+    .cta-banner-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .cta-banner-text span { font-size: 12.5px; opacity: 0.85; }
+    .cta-banner .btn { background: #fff; color: var(--accent); flex-shrink: 0; }
+    .cta-banner .btn:hover { background: var(--green-50); }
+
+    /* ── STATS ── */
+    .app-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+    .stat-icon {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
+    .stat-info .num { font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; letter-spacing: -0.02em; }
+    .stat-info .lbl { font-size: 11.5px; color: var(--text2); margin-top: 5px; font-weight: 500; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px;
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+    .filter-tab.active { background: var(--accent); color: #fff; }
+    .filter-tab:hover:not(.active) { background: var(--accent-light); color: var(--accent); }
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+      max-width: 280px;
+      margin-left: auto;
+    }
+    .search-wrap i {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text3); font-size: 15px; pointer-events: none;
+    }
+    .search-wrap input { padding-left: 36px; }
+
+    /* ── APPLICATION CARD ── */
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .app-card:hover { box-shadow: var(--shadow-md); }
+
+    .app-card-main {
+      padding: 18px 20px 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .app-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+    .app-card-body { flex: 1; min-width: 230px; }
+    .app-card-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 2px;
+    }
+    .app-card-top h3 { font-size: 15px; font-weight: 700; color: var(--text); }
+    .app-card-top .urdu-name { font-size: 12px; color: var(--text3); direction: rtl; }
+    .app-id {
+      font-size: 11px;
+      color: var(--text3);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      margin-top: 2px;
+    }
+    .app-meta-row {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+    .app-meta-row span { display: flex; align-items: center; gap: 5px; }
+    .app-meta-row i { font-size: 13px; color: var(--text3); }
+
+    /* stepper */
+    .stepper {
+      display: flex;
+      align-items: flex-start;
+      margin: 18px 2px 2px;
+      max-width: 460px;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step .dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      background: var(--surface);
+      color: var(--text3);
+      border: 2px solid var(--border2);
+      z-index: 2;
+      transition: all 0.2s;
+    }
+    .step.done .dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step.current .dot { background: #fff; border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 4px var(--accent-light); }
+    .step.rejected .dot { background: var(--red); border-color: var(--red); color: #fff; }
+    .step .label {
+      font-size: 9.5px;
+      color: var(--text3);
+      margin-top: 6px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    .step.done .label, .step.current .label { color: var(--text2); }
+    .step.rejected .label { color: var(--red); }
+    .step::after {
+      content: '';
+      position: absolute;
+      top: 10px; left: 50%;
+      width: 100%; height: 2px;
+      background: var(--border);
+      z-index: 1;
+    }
+    .step:last-child::after { display: none; }
+    .step.done::after { background: var(--accent); }
+
+    /* footer actions */
+    .app-card-actions {
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      background: var(--green-50);
+    }
+    .app-card-actions .status-text {
+      font-size: 12px;
+      color: var(--text2);
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .app-card-actions .status-text i { color: var(--accent); font-size: 14px; }
+
+    /* expandable details */
+    .app-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      border-top: 1px solid var(--border);
+    }
+    .app-details.open { max-height: 700px; }
+    .app-details-inner {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+    .details-col h5 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      margin-bottom: 12px;
+    }
+    .timeline { display: flex; flex-direction: column; gap: 14px; }
+    .timeline-item { display: flex; gap: 12px; }
+    .timeline-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .timeline-item.future .timeline-dot { background: var(--border2); }
+    .timeline-item.bad .timeline-dot { background: var(--red); }
+    .timeline-content strong { font-size: 13px; color: var(--text); display: block; font-weight: 600; }
+    .timeline-content span { font-size: 11px; color: var(--text3); }
+    .timeline-item.future .timeline-content strong { color: var(--text3); font-weight: 500; }
+
+    .doc-list { display: flex; flex-direction: column; gap: 9px; }
+    .doc-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); }
+    .doc-item i { color: var(--accent); font-size: 15px; flex-shrink: 0; }
+
+    .remark-box {
+      grid-column: 1 / -1;
+      background: var(--red-bg);
+      border: 1px solid #fecaca;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12.5px;
+      color: #991b1b;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      line-height: 1.55;
+    }
+    .remark-box i { flex-shrink: 0; margin-top: 1px; font-size: 14px; }
+    .remark-box.gold { background: var(--gold-bg); border-color: var(--gold-border); color: var(--gold-text); }
+    .remark-box.gold i { color: var(--gold-text); }
+
+    .chev { transition: transform 0.2s; }
+    .app-card.expanded .chev { transform: rotate(180deg); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .app-stats { grid-template-columns: 1fr 1fr; }
+      .app-details-inner { grid-template-columns: 1fr; gap: 20px; }
+    }
+    @media (max-width: 600px) {
+      .stepper { max-width: 100%; }
+      .step .label { font-size: 8.5px; }
+      .search-wrap { max-width: 100%; margin-left: 0; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <a class="top-bar-logo" href="dashboard.html">
+    <span class="flag">🇵🇰</span>
+    <h1>Rahnuma <span>/ My Applications</span></h1>
+  </a>
+  <div class="top-bar-right">
+    <div class="status-pill">
+      <div class="status-dot online"></div>
+      <span class="status-label">Portal Active</span>
+    </div>
+    <a class="header-avatar" href="profile.html" id="avatarEl" title="My Profile">A</a>
+  </div>
+</header>
+
+<div class="portal-layout">
+
+  <!-- ── SIDEBAR NAV ── -->
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Main</span>
+    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+    <a class="nav-item" href="profile.html"><i class="ti ti-user-circle"></i> My Profile</a>
+    <a class="nav-item" href="eligibility.html">
+      <i class="ti ti-checklist"></i> Eligibility Check
+      <span class="nav-badge">AI</span>
+    </a>
+    <span class="nav-section-label">Applications</span>
+    <a class="nav-item active" href="applications.html">
+      <i class="ti ti-file-text"></i> My Applications
+      <span class="nav-badge" id="navAppCount">4</span>
+    </a>
+    <a class="nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Find Offices</a>
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="signOut()" style="color:var(--red)">
+      <i class="ti ti-logout"></i> Sign Out
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h2>My Applications <span style="font-size:14px;color:var(--text3);font-weight:400;direction:rtl;margin-left:8px">میری درخواستیں</span></h2>
+      <p>Track the status of every program you've applied to, in one place.</p>
+    </div>
+
+    <!-- CTA banner -->
+    <div class="cta-banner">
+      <div class="cta-banner-icon"><i class="ti ti-sparkles"></i></div>
+      <div class="cta-banner-text">
+        <strong>Looking for more support?</strong>
+        <span>Run a fresh eligibility check — new programs open up as your situation changes.</span>
+      </div>
+      <a class="btn" href="eligibility.html"><i class="ti ti-search"></i> Check Eligibility</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="app-stats" id="appStats"></div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="pending">Pending</button>
+        <button class="filter-tab" data-filter="under_review">Under Review</button>
+        <button class="filter-tab" data-filter="approved">Approved</button>
+        <button class="filter-tab" data-filter="rejected">Rejected</button>
+      </div>
+      <div class="search-wrap">
+        <i class="ti ti-search"></i>
+        <input class="form-input" type="text" id="searchInput" placeholder="Search applications..." />
+      </div>
+    </div>
+
+    <!-- Applications list -->
+    <div id="appList"></div>
+
+    <!-- Empty state (hidden by default) -->
+    <div class="empty-state" id="emptyState" style="display:none">
+      <i class="ti ti-file-off"></i>
+      <p>No applications match this filter.</p>
+    </div>
+
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <a class="mobile-nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Home</a>
+    <a class="mobile-nav-item" href="eligibility.html"><i class="ti ti-sparkles"></i> Eligibility</a>
+    <a class="mobile-nav-item active" href="applications.html"><i class="ti ti-file-text"></i> Apps</a>
+    <a class="mobile-nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Offices</a>
+    <a class="mobile-nav-item" href="profile.html"><i class="ti ti-user"></i> Profile</a>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="ti ti-check"></i>
+  <span id="toastMsg">Done.</span>
+</div>
+
+<script>
+  // ── Auth guard ──
+  if (localStorage.getItem('rahnuma_logged_in') !== 'true') {
+    window.location.href = 'index.html';
+  }
+  let user = JSON.parse(localStorage.getItem('rahnuma_user') || '{}');
+  (function renderHeader(){
+    const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('avatarEl').textContent = initials;
+  })();
+
+  // ── Demo application data ──
+  const STEPS = ['Submitted', 'Verification', 'Under Review', 'Decision'];
+
+  const APPLICATIONS = [
+    {
+      id: 'APP-2026-00142',
+      program: 'BISP Kafalat Program',
+      urdu: 'بینظیر کفالت پروگرام',
+      icon: '💰',
+      iconBg: 'var(--green-100)',
+      iconFg: 'var(--accent)',
+      status: 'approved',
+      office: 'Tehsil Office, Rawalpindi',
+      submitted: '2 Mar 2026',
+      stepIndex: 3,
+      benefit: 'PKR 10,500 disbursed quarterly via your registered account.',
+      documents: ['CNIC (original + copy)', 'NSER registration slip', 'Proof of residence', 'Bank/mobile account details'],
+      timeline: [
+        { title: 'Application submitted', date: '2 March 2026', state: 'done' },
+        { title: 'Documents verified at Tehsil Office', date: '9 March 2026', state: 'done' },
+        { title: 'Eligibility review completed', date: '21 March 2026', state: 'done' },
+        { title: 'Approved — first payment scheduled', date: '2 April 2026', state: 'done' },
+      ],
+      remark: { type: 'gold', icon: 'ti-info-circle', text: 'Next disbursement window opens 1–15 July 2026. SMS alerts will be sent to your registered number.' },
+    },
+    {
+      id: 'APP-2026-00298',
+      program: 'Sehat Sahulat Program',
+      urdu: 'صحت سہولت پروگرام',
+      icon: '🏥',
+      iconBg: 'var(--blue-bg)',
+      iconFg: 'var(--blue)',
+      status: 'under_review',
+      office: 'District Health Office, Rawalpindi',
+      submitted: '10 May 2026',
+      stepIndex: 2,
+      benefit: 'Free inpatient treatment up to PKR 1,000,000 per family per year, once approved.',
+      documents: ['CNIC (original + copy)', 'Family registration certificate (B-Form for children)'],
+      timeline: [
+        { title: 'Application submitted', date: '10 May 2026', state: 'done' },
+        { title: 'Documents verified', date: '15 May 2026', state: 'done' },
+        { title: 'Eligibility review in progress', date: 'Expected by 28 June 2026', state: 'current' },
+        { title: 'Decision & health card issuance', date: 'Pending', state: 'future' },
+      ],
+      remark: { type: 'gold', icon: 'ti-clock', text: 'Review is taking slightly longer than usual in your district. No action needed from you right now.' },
+    },
+    {
+      id: 'APP-2026-00351',
+      program: 'Ehsaas Taleemi Wazaif',
+      urdu: 'احساس تعلیمی وظائف',
+      icon: '🎓',
+      iconBg: '#f5f3ff',
+      iconFg: '#7c3aed',
+      status: 'pending',
+      office: 'Online Portal',
+      submitted: '1 Jun 2026',
+      stepIndex: 1,
+      benefit: 'Quarterly education stipend for school-going children, paid per enrolled child.',
+      documents: ['CNIC (original + copy)', 'School enrollment certificate', "Child's B-Form"],
+      timeline: [
+        { title: 'Application submitted', date: '1 June 2026', state: 'done' },
+        { title: 'Document verification in progress', date: 'Expected by 25 June 2026', state: 'current' },
+        { title: 'Eligibility review', date: 'Pending', state: 'future' },
+        { title: 'Decision', date: 'Pending', state: 'future' },
+      ],
+      remark: { type: 'gold', icon: 'ti-upload', text: "One document — the child's B-Form — was flagged as low-resolution. Re-upload it from your applications portal to avoid delay." },
+    },
+    {
+      id: 'APP-2025-00876',
+      program: 'Ehsaas Emergency Cash',
+      urdu: 'احساس ایمرجنسی کیش',
+      icon: '⚡',
+      iconBg: 'var(--red-bg)',
+      iconFg: 'var(--red)',
+      status: 'rejected',
+      office: 'PDMA Field Office',
+      submitted: '14 Sep 2025',
+      stepIndex: 3,
+      benefit: 'One-time emergency relief payment for disaster-affected households.',
+      documents: ['CNIC (original + copy)', 'Damage assessment form'],
+      timeline: [
+        { title: 'Application submitted', date: '14 September 2025', state: 'done' },
+        { title: 'Documents verified', date: '20 September 2025', state: 'done' },
+        { title: 'Eligibility review completed', date: '2 October 2025', state: 'done' },
+        { title: 'Application rejected', date: '6 October 2025', state: 'bad' },
+      ],
+      remark: { type: 'red', icon: 'ti-alert-circle', text: 'Reason: household was already receiving relief under BISP Kafalat for the same declared area. You may re-apply if your circumstances change.' },
+    },
+  ];
+
+  // ── Render stats ──
+  function renderStats() {
+    const total = APPLICATIONS.length;
+    const approved = APPLICATIONS.filter(a => a.status === 'approved').length;
+    const inProgress = APPLICATIONS.filter(a => a.status === 'pending' || a.status === 'under_review').length;
+    const rejected = APPLICATIONS.filter(a => a.status === 'rejected').length;
+
+    const stats = [
+      { num: total, lbl: 'Total Applications', icon: 'ti-file-text', bg: 'var(--green-100)', fg: 'var(--accent)' },
+      { num: approved, lbl: 'Approved', icon: 'ti-circle-check', bg: 'var(--green-100)', fg: 'var(--accent)' },
+      { num: inProgress, lbl: 'In Progress', icon: 'ti-clock', bg: 'var(--gold-bg)', fg: 'var(--gold-text)' },
+      { num: rejected, lbl: 'Rejected', icon: 'ti-circle-x', bg: 'var(--red-bg)', fg: 'var(--red)' },
+    ];
+
+    document.getElementById('appStats').innerHTML = stats.map(s => `
+      <div class="stat-card">
+        <div class="stat-icon" style="background:${s.bg};color:${s.fg}"><i class="ti ${s.icon}"></i></div>
+        <div class="stat-info">
+          <div class="num">${s.num}</div>
+          <div class="lbl">${s.lbl}</div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('navAppCount').textContent = total;
+  }
+
+  // ── Status → badge / label ──
+  function statusBadge(status) {
+    const map = {
+      approved:     { cls: 'badge-green', label: 'Approved',      icon: 'ti-circle-check' },
+      under_review: { cls: 'badge-blue',  label: 'Under Review',  icon: 'ti-eye' },
+      pending:      { cls: 'badge-gold',  label: 'Pending',       icon: 'ti-clock' },
+      rejected:     { cls: 'badge-red',   label: 'Rejected',      icon: 'ti-circle-x' },
+    };
+    return map[status];
+  }
+
+  // ── Build stepper HTML ──
+  function buildStepper(app) {
+    return STEPS.map((label, i) => {
+      let cls = '';
+      if (app.status === 'rejected' && i === app.stepIndex) cls = 'rejected';
+      else if (i < app.stepIndex) cls = 'done';
+      else if (i === app.stepIndex) cls = app.status === 'approved' ? 'done' : 'current';
+
+      const icon = cls === 'done' ? '<i class="ti ti-check"></i>'
+                 : cls === 'rejected' ? '<i class="ti ti-x"></i>'
+                 : (i + 1);
+
+      return `
+        <div class="step ${cls}">
+          <div class="dot">${icon}</div>
+          <div class="label">${label}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Build details accordion ──
+  function buildDetails(app) {
+    const timelineHTML = app.timeline.map(t => {
+      const stateCls = t.state === 'future' ? 'future' : (t.state === 'bad' ? 'bad' : '');
+      return `
+        <div class="timeline-item ${stateCls}">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <strong>${t.title}</strong>
+            <span>${t.date}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    const docsHTML = app.documents.map(d => `
+      <div class="doc-item"><i class="ti ti-file-check"></i> ${d}</div>
+    `).join('');
+
+    const remarkCls = app.remark.type === 'red' ? '' : 'gold';
+
+    return `
+      <div class="app-details-inner">
+        <div class="details-col">
+          <h5>Timeline</h5>
+          <div class="timeline">${timelineHTML}</div>
+        </div>
+        <div class="details-col">
+          <h5>Required Documents</h5>
+          <div class="doc-list">${docsHTML}</div>
+        </div>
+        <div class="remark-box ${remarkCls}">
+          <i class="ti ${app.remark.icon}"></i>
+          <span>${app.remark.text}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // ── Build a single application card ──
+  function buildCard(app) {
+    const b = statusBadge(app.status);
+    const actions = [];
+
+    if (app.status === 'approved') {
+      actions.push(`<button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); showToast('Approval letter downloaded.')"><i class="ti ti-download"></i> Download Letter</button>`);
+    }
+    if (app.status === 'pending' || app.status === 'under_review') {
+      actions.push(`<button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); if(confirm('Withdraw this application?')) showToast('Application withdrawn.')" style="color:var(--red);border-color:#fecaca"><i class="ti ti-x"></i> Withdraw</button>`);
+    }
+    if (app.status === 'rejected') {
+      actions.push(`<a class="btn btn-outline btn-sm" href="eligibility.html" onclick="event.stopPropagation()"><i class="ti ti-refresh"></i> Re-check Eligibility</a>`);
+    }
+    actions.push(`<a class="btn btn-outline btn-sm" href="offices.html" onclick="event.stopPropagation()"><i class="ti ti-map-pin"></i> Contact Office</a>`);
+
+    return `
+      <div class="app-card" data-status="${app.status}" data-search="${(app.program + ' ' + app.id).toLowerCase()}">
+        <div class="app-card-main" onclick="toggleDetails(this)">
+          <div class="app-icon" style="background:${app.iconBg};color:${app.iconFg}">${app.icon}</div>
+          <div class="app-card-body">
+            <div class="app-card-top">
+              <h3>${app.program}</h3>
+              <span class="urdu-name">${app.urdu}</span>
+              <span class="badge ${b.cls}"><i class="ti ${b.icon}"></i> ${b.label}</span>
+            </div>
+            <div class="app-id">${app.id}</div>
+            <div class="app-meta-row">
+              <span><i class="ti ti-calendar"></i> Submitted ${app.submitted}</span>
+              <span><i class="ti ti-building"></i> ${app.office}</span>
+            </div>
+            <div class="stepper">${buildStepper(app)}</div>
+          </div>
+          <i class="ti ti-chevron-down chev" style="color:var(--text3);font-size:18px;margin-top:4px;flex-shrink:0"></i>
+        </div>
+        <div class="app-card-actions">
+          <span class="status-text"><i class="ti ti-coin"></i> ${app.benefit}</span>
+          ${actions.join('')}
+        </div>
+        <div class="app-details">
+          ${buildDetails(app)}
+        </div>
+      </div>
+    `;
+  }
+
+  function toggleDetails(headerEl) {
+    const card = headerEl.closest('.app-card');
+    const details = card.querySelector('.app-details');
+    card.classList.toggle('expanded');
+    details.classList.toggle('open');
+  }
+
+  // ── Render list with filter + search ──
+  let currentFilter = 'all';
+  function renderList() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const filtered = APPLICATIONS.filter(a => {
+      const matchesFilter = currentFilter === 'all' || a.status === currentFilter;
+      const matchesSearch = !q || (a.program + ' ' + a.id).toLowerCase().includes(q);
+      return matchesFilter && matchesSearch;
+    });
+
+    const listEl = document.getElementById('appList');
+    const emptyEl = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '';
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      listEl.innerHTML = filtered.map(buildCard).join('');
+    }
+  }
+
+  // ── Filter tabs ──
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      renderList();
+    });
+  });
+  document.getElementById('searchInput').addEventListener('input', renderList);
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  function signOut() {
+    localStorage.removeItem('rahnuma_logged_in');
+    window.location.href = 'index.html';
+  }
+
+  // ── Init ──
+  renderStats();
+  renderList();
+</script>
+</body>
+</html>

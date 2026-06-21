@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── GREETING CARD ── */
+    .greeting-card {
+      background: linear-gradient(135deg, var(--accent) 0%, #0a5c34 100%);
+      border-radius: var(--radius-xl);
+      padding: clamp(20px, 3vw, 32px) clamp(20px, 3vw, 32px);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 28px rgba(13,122,69,0.30);
+    }
+    .greeting-card::before {
+      content: '🇵🇰';
+      position: absolute;
+      right: -10px;
+      bottom: -20px;
+      font-size: 160px;
+      opacity: 0.07;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .greeting-card::after {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    .greeting-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .greeting-text h2 {
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .greeting-text .urdu {
+      font-size: 13px;
+      opacity: 0.65;
+      direction: rtl;
+      display: block;
+      margin-bottom: 8px;
+      font-family: var(--urdu-font);
+    }
+    .greeting-text p {
+      font-size: 14px;
+      opacity: 0.8;
+      max-width: 480px;
+      line-height: 1.55;
+    }
+    .greeting-cnic-badge {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .greeting-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .greeting-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .greeting-btn.white {
+      background: #fff;
+      color: var(--accent);
+    }
+    .greeting-btn.white:hover { background: var(--green-100); text-decoration: none; }
+    .greeting-btn.outline {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .greeting-btn.outline:hover { background: rgba(255,255,255,0.25); text-decoration: none; }
+
+    /* profile completion bar */
+    .profile-bar-wrap {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .profile-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 7px;
+      font-weight: 500;
+    }
+    .profile-bar-track {
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .profile-bar-fill {
+      height: 100%;
+      background: #fff;
+      border-radius: 99px;
+      transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ── STAT CARDS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.15s, transform 0.15s;
+      cursor: default;
+    }
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .stat-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .stat-urdu {
+      font-size: 11px;
+      color: var(--text3);
+      direction: rtl;
+      display: block;
+      font-family: var(--urdu-font);
+    }
+    .stat-delta {
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .stat-delta.up   { color: var(--green-700); }
+    .stat-delta.warn { color: #d97706; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .section-title h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .section-title .urdu-small {
+      font-size: 12px;
+      color: var(--text3);
+      direction: rtl;
+      margin-left: 8px;
+      font-weight: 400;
+      font-family: var(--urdu-font);
+    }
+    .section-title a {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ── QUICK ACTION TILES ── */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .quick-tile {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-tile::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 2px solid transparent;
+      transition: border-color 0.15s;
+      pointer-events: none;
+    }
+    .quick-tile:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    .quick-tile:hover::after { border-color: var(--accent); }
+
+    .quick-tile-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .quick-tile h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .quick-tile p {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+    .quick-tile .urdu-tile {
+      font-size: 11px;
+      color: var(--text3);
+      direction: rtl;
+      font-family: var(--urdu-font);
+    }
+    .quick-tile-arrow {
+      margin-top: auto;
+      color: var(--text3);
+      font-size: 16px;
+      transition: color 0.15s, transform 0.15s;
+    }
+    .quick-tile:hover .quick-tile-arrow { color: var(--accent); transform: translateX(3px); }
+
+    /* ── RECENT ACTIVITY ── */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 16px;
+      border-radius: var(--radius-md);
+      transition: background 0.12s;
+    }
+    .activity-item:hover { background: var(--green-50); }
+    .activity-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .activity-body { flex: 1; min-width: 0; }
+    .activity-body strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .activity-body span {
+      font-size: 11px;
+      color: var(--text3);
+    }
+    .activity-time {
+      font-size: 11px;
+      color: var(--text3);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ── PROGRAM SPOTLIGHT ── */
+    .spotlight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .spotlight-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .spotlight-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .spotlight-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .spotlight-body {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .spotlight-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+    .spotlight-amount {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    .spotlight-amount span {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text3);
+      margin-left: 3px;
+    }
+
+    /* ── NOTICE BANNER ── */
+    .notice-banner {
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 13px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      margin-bottom: 24px;
+    }
+    .notice-banner i { color: #d97706; font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .notice-banner p { font-size: 13px; color: var(--gold-text); line-height: 1.55; }
+    .notice-banner strong { font-weight: 700; color: #92400e; }
+    .notice-dismiss {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: var(--gold-text);
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+      padding: 0 2px;
+      opacity: 0.6;
+      transition: opacity 0.15s;
+    }
+    .notice-dismiss:hover { opacity: 1; }
+
+    /* ── LAYOUT HELPERS ── */
+    .two-col { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+    .stack { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1050px) {
+      .two-col { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .quick-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .spotlight-grid { grid-template-columns: 1fr; }
+      .greeting-cnic-badge { display: none; }
+    }
+    @media (max-width: 440px) {
+      .quick-grid { grid-template-columns: 1fr; }
+      .stats-row  { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <a class="top-bar-logo" href="dashboard.html">
+    <span class="flag">🇵🇰</span>
+    <h1>Rahnuma <span>/ Dashboard</span></h1>
+  </a>
+  <div class="top-bar-right">
+    <div class="status-pill">
+      <div class="status-dot" id="statusDot"></div>
+      <span class="status-label" id="statusLabel">Connecting...</span>
+    </div>
+    <a class="header-avatar" href="profile.html" id="avatarEl" title="My Profile">A</a>
+  </div>
+</header>
+
+<div class="portal-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Main</span>
+    <a class="nav-item active" href="dashboard.html">
+      <i class="ti ti-layout-dashboard"></i> Dashboard
+    </a>
+    <a class="nav-item" href="profile.html">
+      <i class="ti ti-user-circle"></i> My Profile
+    </a>
+    <a class="nav-item" href="eligibility.html">
+      <i class="ti ti-checklist"></i> Eligibility Check
+      <span class="nav-badge">AI</span>
+    </a>
+
+    <span class="nav-section-label">Applications</span>
+    <a class="nav-item" href="applications.html">
+      <i class="ti ti-file-text"></i> My Applications
+      <span class="nav-badge">4</span>
+    </a>
+    <a class="nav-item" href="offices.html">
+      <i class="ti ti-map-pin"></i> Find Offices
+    </a>
+
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="signOut()" style="color:var(--red)">
+      <i class="ti ti-logout"></i> Sign Out
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <!-- Notice banner -->
+    <div class="notice-banner" id="noticeBanner">
+      <i class="ti ti-bell-ringing"></i>
+      <p><strong>Complete your profile</strong> to get accurate eligibility results across all programs. It takes less than 2 minutes. <span style="direction:rtl;font-size:12px;color:#92400e;font-family:var(--urdu-font)"> پروفائل مکمل کریں</span></p>
+      <button class="notice-dismiss" onclick="dismissNotice()" title="Dismiss"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Greeting card -->
+    <div class="greeting-card">
+      <div class="greeting-top">
+        <div class="greeting-text">
+          <span class="urdu">خوش آمدید</span>
+          <h2 id="greetingText">Good morning, Ali</h2>
+          <p>Here's an overview of your benefits profile and active applications.</p>
+        </div>
+        <div class="greeting-cnic-badge">
+          <i class="ti ti-id-badge" style="font-size:14px"></i>
+          <span id="cnicDisplay">—</span>
+        </div>
+      </div>
+
+      <div class="greeting-actions">
+        <a class="greeting-btn white" href="eligibility.html">
+          <i class="ti ti-sparkles"></i> Check Eligibility
+        </a>
+        <a class="greeting-btn outline" href="profile.html">
+          <i class="ti ti-user-edit"></i> Update Profile
+        </a>
+      </div>
+
+      <div class="profile-bar-wrap">
+        <div class="profile-bar-label">
+          <span>Profile completion <span id="pctLabel">—</span></span>
+          <span id="pctHint" style="opacity:0.6">Fill in your details to improve accuracy</span>
+        </div>
+        <div class="profile-bar-track">
+          <div class="profile-bar-fill" id="profileBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--green-100);color:var(--green-700)">
+          <i class="ti ti-checklist"></i>
+        </div>
+        <div>
+          <div class="stat-value">8</div>
+          <div class="stat-label">Programs Available</div>
+          <span class="stat-urdu">دستیاب پروگرام</span>
+        </div>
+        <div class="stat-delta up"><i class="ti ti-arrow-up-right"></i> 2 new this month</div>
+      </div>
+
+      <!-- Fix 16: 2 = in-progress (pending + under_review) out of 4 total -->
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#eff6ff;color:#2563eb">
+          <i class="ti ti-file-text"></i>
+        </div>
+        <div>
+          <div class="stat-value" id="statApplications">2</div>
+          <div class="stat-label">In-Progress Applications</div>
+          <span class="stat-urdu">فعال درخواستیں</span>
+        </div>
+        <div class="stat-delta warn"><i class="ti ti-clock"></i> 1 pending review</div>
+      </div>
+
+      <!-- Fix 17: quarterly, not monthly -->
+      <div class="stat-card">
+        <div class="stat-icon" style="background:var(--gold-bg);color:#d97706">
+          <i class="ti ti-currency-rupee"></i>
+        </div>
+        <div>
+          <div class="stat-value">PKR</div>
+          <div class="stat-label">Potential quarterly benefit</div>
+          <span class="stat-urdu">ممکنہ سہ ماہی فائدہ</span>
+        </div>
+        <div class="stat-delta up" style="font-size:16px;font-weight:800;color:var(--accent);letter-spacing:-0.02em">
+          10,500+
+        </div>
+      </div>
+
+      <!-- Fix 18: computed from profile, with demo fallback label -->
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef2f2;color:#dc2626">
+          <i class="ti ti-heart-handshake"></i>
+        </div>
+        <div>
+          <div class="stat-value" id="statMatched">—</div>
+          <div class="stat-label" id="statMatchedLabel">Programs Matched</div>
+          <span class="stat-urdu">مماثل پروگرام</span>
+        </div>
+        <div class="stat-delta up" id="statMatchedHint"><i class="ti ti-sparkles"></i> Based on your profile</div>
+      </div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="two-col">
+
+      <!-- Left column -->
+      <div class="stack">
+
+        <!-- Quick actions -->
+        <div>
+          <div class="section-title">
+            <h3>Quick Actions <span class="urdu-small">فوری اقدامات</span></h3>
+          </div>
+          <div class="quick-grid">
+            <a class="quick-tile" href="eligibility.html">
+              <div class="quick-tile-icon" style="background:var(--green-100);color:var(--green-700)">
+                <i class="ti ti-sparkles"></i>
+              </div>
+              <div>
+                <h4>Eligibility Check</h4>
+                <p>AI-powered check across BISP, Ehsaas, Sehat Sahulat and more.</p>
+                <span class="urdu-tile">اہلیت کی جانچ</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+
+            <a class="quick-tile" href="applications.html">
+              <div class="quick-tile-icon" style="background:#eff6ff;color:#2563eb">
+                <i class="ti ti-file-certificate"></i>
+              </div>
+              <div>
+                <h4>Track Applications</h4>
+                <p>View status of your BISP, Ehsaas and Sehat Sahulat applications.</p>
+                <span class="urdu-tile">درخواستوں کی نگرانی</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+
+            <a class="quick-tile" href="offices.html">
+              <div class="quick-tile-icon" style="background:#fef9c3;color:#ca8a04">
+                <i class="ti ti-map-pin"></i>
+              </div>
+              <div>
+                <h4>Find Offices</h4>
+                <p>Locate BISP facilitation centres and Ehsaas offices near you.</p>
+                <span class="urdu-tile">دفاتر تلاش کریں</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+
+            <a class="quick-tile" href="profile.html">
+              <div class="quick-tile-icon" style="background:#f3e8ff;color:#9333ea">
+                <i class="ti ti-user-edit"></i>
+              </div>
+              <div>
+                <h4>My Profile</h4>
+                <p>Update your household, income and personal details.</p>
+                <span class="urdu-tile">میرا پروفائل</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+
+            <!-- Fix 24: no broken #download anchor — triggers window.print() instead -->
+            <a class="quick-tile" href="#" onclick="event.preventDefault(); window.print()">
+              <div class="quick-tile-icon" style="background:#fef2f2;color:#dc2626">
+                <i class="ti ti-download"></i>
+              </div>
+              <div>
+                <h4>Download Summary</h4>
+                <p>Print or save your eligibility report as a PDF.</p>
+                <span class="urdu-tile">خلاصہ ڈاؤنلوڈ کریں</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+
+            <a class="quick-tile" href="offices.html">
+              <div class="quick-tile-icon" style="background:#ecfdf5;color:#059669">
+                <i class="ti ti-phone-call"></i>
+              </div>
+              <div>
+                <h4>Helplines</h4>
+                <p>Direct numbers for BISP, Ehsaas, Sehat Sahulat support.</p>
+                <span class="urdu-tile">ہیلپ لائنز</span>
+              </div>
+              <i class="ti ti-arrow-right quick-tile-arrow"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Fix 19: spotlight cards rendered by JS from profile evaluation -->
+        <div>
+          <div class="section-title">
+            <h3>Top Programs for You <span class="urdu-small">آپ کے لیے پروگرام</span></h3>
+            <a href="eligibility.html">See all →</a>
+          </div>
+          <div class="spotlight-grid" id="spotlightGrid">
+            <!-- populated by renderSpotlight() -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column -->
+      <div class="stack">
+
+        <!-- Fix 20: activity feed derived from real data, no fabricated events -->
+        <div class="card">
+          <div class="section-title" style="margin-bottom:10px">
+            <h3>Recent Activity <span class="urdu-small">حالیہ سرگرمی</span></h3>
+          </div>
+          <div class="activity-list" id="activityList">
+            <!-- populated by renderActivity() -->
+          </div>
+        </div>
+
+        <!-- Helpline quick card -->
+        <div class="card-sm">
+          <div class="t-label" style="margin-bottom:12px">Emergency Helplines · ہیلپ لائنز</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">BISP Helpline</div>
+                <div style="font-size:11px;color:var(--text3)">Income support & Kafalat</div>
+              </div>
+              <a href="tel:0800-26477" class="btn btn-sm btn-outline" style="gap:6px">
+                <i class="ti ti-phone"></i> 0800-26477
+              </a>
+            </div>
+            <div style="height:1px;background:var(--border)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">Sehat Sahulat</div>
+                <div style="font-size:11px;color:var(--text3)">Health card & hospitals</div>
+              </div>
+              <a href="tel:0311-1117476" class="btn btn-sm btn-outline" style="gap:6px">
+                <i class="ti ti-phone"></i> 0311-111-7476
+              </a>
+            </div>
+            <div style="height:1px;background:var(--border)"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text)">Ehsaas Program</div>
+                <div style="font-size:11px;color:var(--text3)">All Ehsaas schemes</div>
+              </div>
+              <a href="tel:080026477" class="btn btn-sm btn-outline" style="gap:6px">
+                <i class="ti ti-phone"></i> 080026477
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demo badge -->
+        <div style="background:var(--gold-bg);border:1px solid var(--gold-border);border-radius:var(--radius-md);padding:13px 15px;font-size:12px;color:var(--gold-text);display:flex;gap:9px;align-items:flex-start">
+          <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px;font-size:15px;color:#d97706"></i>
+          <span><strong>Demo portal.</strong> All application statuses and benefit amounts shown are for demonstration only. This is not an official government service.</span>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <a class="mobile-nav-item active" href="dashboard.html">
+      <i class="ti ti-layout-dashboard"></i> Home
+    </a>
+    <a class="mobile-nav-item" href="eligibility.html">
+      <i class="ti ti-sparkles"></i> Eligibility
+    </a>
+    <a class="mobile-nav-item" href="applications.html">
+      <i class="ti ti-file-text"></i> Apps
+    </a>
+    <a class="mobile-nav-item" href="offices.html">
+      <i class="ti ti-map-pin"></i> Offices
+    </a>
+    <a class="mobile-nav-item" href="profile.html">
+      <i class="ti ti-user"></i> Profile
+    </a>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="ti ti-check"></i>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+  // ── Auth guard ──
+  if (localStorage.getItem('rahnuma_logged_in') !== 'true') {
+    window.location.href = 'index.html';
+  }
+
+  // ── Load user ──
+  const user = JSON.parse(localStorage.getItem('rahnuma_user') || '{}');
+
+  // Avatar initials
+  const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('avatarEl').textContent = initials;
+
+  // CNIC display
+  document.getElementById('cnicDisplay').textContent = user.cnic || '—';
+
+  // Greeting
+  const hour = new Date().getHours();
+  const tod  = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = (user.name || 'there').split(' ')[0];
+  document.getElementById('greetingText').textContent = `${tod}, ${firstName}`;
+
+  // ── Fix 21: profile completion formula matching profile.html (7 equally-weighted fields) ──
+  function calculateProfileCompletion(u) {
+    const fields = { name: u.name, cnic: u.cnic, province: u.province, city: u.city, income: u.income, familySize: u.familySize, employment: u.employment };
+    const filled = Object.values(fields).filter(v => v && v !== '').length;
+    return Math.round((filled / Object.keys(fields).length) * 100);
+  }
+  const pct = calculateProfileCompletion(user);
+  setTimeout(() => {
+    document.getElementById('profileBar').style.width = pct + '%';
+    document.getElementById('pctLabel').textContent = pct + '%';
+    if (pct === 100) {
+      document.getElementById('pctHint').textContent = 'Profile complete ✓';
+      document.getElementById('noticeBanner').style.display = 'none';
+    }
+  }, 300);
+
+  // ── Fix 18 & 19: lightweight program evaluation matching eligibility.html logic ──
+  const PROGRAMS = [
+    {
+      name: 'BISP / Ehsaas Kafalat',
+      body: 'Unconditional cash transfer for low-income households registered in NSER survey.',
+      amount: 'PKR 8,500', period: 'quarter',
+      check: u => !u.income || u.income === 'none' || u.income === 'under30k',
+    },
+    {
+      name: 'Sehat Sahulat',
+      body: 'Free in-patient treatment up to PKR 1,000,000 per family per year at empanelled hospitals.',
+      amount: 'PKR 1,000,000', period: 'year',
+      check: u => true, // open to all registered families
+    },
+    {
+      name: 'Ehsaas Ration Riayat',
+      body: 'Subsidised atta, ghee and pulses from Utility Stores for registered BISP beneficiaries.',
+      amount: '30%', period: 'subsidy',
+      check: u => !u.income || u.income === 'none' || u.income === 'under30k',
+    },
+    {
+      name: 'NAVTTC Skills Training',
+      body: 'Free 3–6 month vocational courses with stipend for youth aged 15–45 across Pakistan.',
+      amount: 'Free', period: '+ stipend',
+      check: u => true,
+    },
+    {
+      name: 'Ehsaas Undergraduate Scholarship',
+      body: 'Full tuition + monthly stipend for public university students from low-income families.',
+      amount: 'PKR 4,000', period: 'month',
+      check: u => u.student,
+    },
+    {
+      name: 'Ehsaas Nashonuma',
+      body: 'Cash + nutrition support for pregnant/lactating mothers and children under 2.',
+      amount: 'Cash + nutrition', period: '',
+      check: u => u.pregnant,
+    },
+    {
+      name: 'Naya Pakistan Housing',
+      body: 'Subsidised housing units with easy installments for non-homeowners.',
+      amount: 'Subsidised', period: 'units',
+      check: u => u.income && (u.income === 'none' || u.income === 'under30k'),
+    },
+    {
+      name: 'Zakat Assistance',
+      body: 'Periodic financial aid for eligible Muslim individuals in need.',
+      amount: 'Variable', period: '',
+      check: u => !u.income || u.income === 'none',
+    },
+  ];
+
+  const profileIsEmpty = !user.province && !user.income && !user.employment;
+  const matched = PROGRAMS.filter(p => p.check(user));
+
+  // Stat card #4
+  if (profileIsEmpty) {
+    document.getElementById('statMatched').textContent = '—';
+    document.getElementById('statMatchedLabel').textContent = 'Programs Matched';
+    document.getElementById('statMatchedHint').innerHTML = '<i class="ti ti-info-circle"></i> Complete profile for results';
+  } else {
+    document.getElementById('statMatched').textContent = matched.length;
+    document.getElementById('statMatchedLabel').textContent = 'Programs Matched';
+    document.getElementById('statMatchedHint').innerHTML = '<i class="ti ti-sparkles"></i> Based on your profile';
+  }
+
+  // Spotlight cards (fix 19)
+  function renderSpotlight() {
+    const grid = document.getElementById('spotlightGrid');
+    const toShow = profileIsEmpty ? PROGRAMS.slice(0, 4) : matched.slice(0, 4);
+    const demoLabel = profileIsEmpty
+      ? '<span class="badge badge-gray" style="font-size:10px">Example</span>'
+      : '';
+
+    grid.innerHTML = toShow.map(p => {
+      const eligible = !profileIsEmpty && p.check(user);
+      const badge = profileIsEmpty
+        ? `<span class="badge badge-gray" style="font-size:10px"><i class="ti ti-info-circle" style="font-size:9px"></i> Example</span>`
+        : `<span class="badge badge-green"><i class="ti ti-check" style="font-size:10px"></i> Likely eligible</span>`;
+      return `
+      <div class="spotlight-card">
+        <div class="spotlight-header">
+          <span class="spotlight-name">${p.name}</span>
+          ${badge}
+        </div>
+        <p class="spotlight-body">${p.body}</p>
+        <div class="spotlight-footer">
+          <div class="spotlight-amount">${p.amount} <span>${p.period}</span></div>
+          <a class="btn btn-sm btn-outline" href="eligibility.html">Details</a>
+        </div>
+      </div>`;
+    }).join('');
+
+    if (profileIsEmpty) {
+      grid.insertAdjacentHTML('afterend', `
+        <p style="font-size:12px;color:var(--text3);margin-top:10px">
+          <i class="ti ti-info-circle"></i>
+          These are example programs. <a href="profile.html">Complete your profile</a> to see your actual matches.
+        </p>`);
+    }
+  }
+  renderSpotlight();
+
+  // ── Fix 20: activity feed from real data only ──
+  function renderActivity() {
+    const list = document.getElementById('activityList');
+
+    // Real applications from localStorage (written by applications.html)
+    const apps = JSON.parse(localStorage.getItem('rahnuma_applications') || '[]');
+    const items = [];
+
+    // Always: current session sign-in
+    items.push({ icon: 'ti-login', bg: 'var(--green-100)', color: 'var(--green-700)', title: 'Signed in to portal', sub: 'Welcome back', time: 'Just now' });
+
+    // Real submitted applications
+    apps.forEach(app => {
+      if (app.submittedDate) {
+        items.push({ icon: 'ti-file-text', bg: '#eff6ff', color: '#2563eb', title: `${app.program} application submitted`, sub: `Status: ${app.status || 'Submitted'}`, time: app.submittedDate });
+      }
+    });
+
+    // Profile created (always real)
+    if (user.joinedDate) {
+      items.push({ icon: 'ti-user-check', bg: '#f3e8ff', color: '#9333ea', title: 'Profile created', sub: 'Account registered', time: user.joinedDate });
+    }
+
+    list.innerHTML = items.map(i => `
+      <div class="activity-item">
+        <div class="activity-dot" style="background:${i.bg};color:${i.color}">
+          <i class="ti ${i.icon}"></i>
+        </div>
+        <div class="activity-body">
+          <strong>${i.title}</strong>
+          <span>${i.sub}</span>
+        </div>
+        <div class="activity-time">${i.time}</div>
+      </div>`).join('');
+  }
+  renderActivity();
+
+  // ── Fix 22: relative /health path — works locally and in production ──
+  async function checkServer() {
+    try {
+      const r = await fetch('/health');
+      if (r.ok) {
+        document.getElementById('statusDot').classList.add('online');
+        document.getElementById('statusLabel').textContent = 'AI Online';
+      } else throw new Error();
+    } catch {
+      document.getElementById('statusLabel').textContent = 'AI Offline';
+    }
+  }
+  checkServer();
+
+  // Dismiss notice
+  function dismissNotice() {
+    document.getElementById('noticeBanner').style.display = 'none';
+  }
+
+  // ── Fix 25: signOut clears rahnuma_user too ──
+  function signOut() {
+    localStorage.removeItem('rahnuma_logged_in');
+    localStorage.removeItem('rahnuma_user');
+    window.location.href = 'index.html';
+  }
+
+  // Toast helper
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── Fix 23: sessionStorage toast — wired up and ready for profile.html to use ──
+  const toastMsg = sessionStorage.getItem('rahnuma_toast');
+  if (toastMsg) {
+    sessionStorage.removeItem('rahnuma_toast');
+    setTimeout(() => showToast(toastMsg), 400);
+  }
+</script>
+</body>
+</html>

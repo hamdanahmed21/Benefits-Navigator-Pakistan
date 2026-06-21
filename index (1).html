@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    if (localStorage.getItem('rahnuma_logged_in') === 'true') {
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — Sign In</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── LOGIN PAGE SPECIFIC ── */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--accent);
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* Left panel — brand */
+    .login-brand {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px, 6vw, 72px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle pattern overlay */
+    .login-brand::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    /* Crescent + star watermark */
+    .brand-watermark {
+      position: absolute;
+      bottom: -40px;
+      right: -40px;
+      font-size: 240px;
+      opacity: 0.05;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .brand-flag {
+      font-size: 52px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .brand-name {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .brand-urdu {
+      font-size: clamp(20px, 3vw, 28px);
+      color: rgba(255,255,255,0.55);
+      direction: rtl;
+      font-family: var(--urdu-font);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .brand-tagline {
+      font-size: clamp(14px, 1.8vw, 17px);
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    .brand-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .brand-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .brand-feature-icon {
+      width: 34px; height: 34px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Right panel — login form */
+    .login-panel {
+      width: clamp(340px, 42%, 480px);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(28px, 5vw, 56px) clamp(24px, 4vw, 48px);
+      overflow-y: auto;
+    }
+
+    .login-panel-header {
+      margin-bottom: 32px;
+    }
+
+    .login-panel-header h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .login-panel-header p {
+      font-size: 14px;
+      color: var(--text2);
+    }
+
+    .login-panel-header .urdu-sub {
+      font-size: 12px;
+      color: var(--text3);
+      direction: rtl;
+      font-family: var(--urdu-font);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* Google button */
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 20px;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .google-btn:hover {
+      border-color: var(--accent);
+      background: var(--green-50);
+      box-shadow: var(--shadow-md);
+    }
+
+    .google-icon {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* CNIC section */
+    .cnic-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cnic-input-wrap {
+      position: relative;
+    }
+
+    .cnic-input-wrap i {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .cnic-input-wrap .form-input {
+      padding-left: 40px;
+      letter-spacing: 1px;
+    }
+
+    /* Demo note */
+    .demo-note {
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      font-size: 12px;
+      color: var(--gold-text);
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      line-height: 1.55;
+    }
+    .demo-note i { flex-shrink: 0; margin-top: 1px; font-size: 14px; }
+
+    /* Footer links */
+    .login-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text3);
+      line-height: 1.8;
+    }
+    .login-footer a { color: var(--accent); font-weight: 600; }
+
+    /* Loading spinner on button */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    /* ── MOBILE: stack vertically ── */
+    @media (max-width: 700px) {
+      html, body { overflow: auto; }
+      body { flex-direction: column; align-items: stretch; }
+
+      .login-brand {
+        padding: 32px 24px 24px;
+        min-height: unset;
+      }
+      .brand-watermark { display: none; }
+      .brand-features { display: none; }
+      .brand-tagline { display: none; }
+      .brand-flag { font-size: 38px; margin-bottom: 10px; }
+      .brand-name { font-size: 32px; }
+
+      .login-panel {
+        width: 100%;
+        padding: 28px 20px 40px;
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT: Brand panel -->
+  <div class="login-brand">
+    <span class="brand-watermark">🇵🇰</span>
+
+    <span class="brand-flag">🇵🇰</span>
+    <h1 class="brand-name">Rahnuma</h1>
+    <span class="brand-urdu">رہنما — شہری فوائد پورٹل</span>
+    <p class="brand-tagline">
+      Your guide to Pakistan's government support programs —
+      BISP, Ehsaas, Sehat Sahulat, and more. Know what you qualify for.
+    </p>
+
+    <div class="brand-features">
+      <div class="brand-feature">
+        <div class="brand-feature-icon"><i class="ti ti-checklist"></i></div>
+        <span>Check eligibility across 8+ programs</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon"><i class="ti ti-file-certificate"></i></div>
+        <span>Track your application status</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon"><i class="ti ti-map-pin"></i></div>
+        <span>Find nearby BISP & Ehsaas offices</span>
+      </div>
+      <div class="brand-feature">
+        <div class="brand-feature-icon"><i class="ti ti-download"></i></div>
+        <span>Download eligibility summaries</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Login form -->
+  <div class="login-panel">
+    <div class="login-panel-header">
+      <h2>Sign in to your portal</h2>
+      <p>Access your benefits profile and eligibility results.</p>
+      <span class="urdu-sub">اپنے فوائد پروفائل تک رسائی حاصل کریں</span>
+    </div>
+
+    <!-- Google sign-in -->
+    <button class="google-btn" onclick="signInWithGoogle()" id="googleBtn">
+      <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <div class="divider" style="margin: 20px 0;">or sign in with CNIC</div>
+
+    <!-- CNIC login -->
+    <div class="cnic-section">
+      <div class="form-group">
+        <label class="form-label" for="cnic">
+          CNIC Number
+          <span class="urdu-label">شناختی کارڈ نمبر</span>
+        </label>
+        <div class="cnic-input-wrap">
+          <i class="ti ti-id-badge"></i>
+          <input
+            class="form-input"
+            type="text"
+            id="cnic"
+            placeholder="35202-1234567-1"
+            maxlength="15"
+            oninput="formatCNIC(this)"
+          />
+        </div>
+        <span class="form-hint">Format: XXXXX-XXXXXXX-X</span>
+        <span class="form-error" id="cnic-error">Please enter a valid CNIC number.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="fullname">
+          Full Name
+          <span class="urdu-label">پورا نام</span>
+        </label>
+        <div class="cnic-input-wrap">
+          <i class="ti ti-user"></i>
+          <input
+            class="form-input"
+            type="text"
+            id="fullname"
+            placeholder="Muhammad Ali"
+          />
+        </div>
+        <span class="form-error" id="name-error">Please enter your full name.</span>
+      </div>
+
+      <div class="demo-note">
+        <i class="ti ti-info-circle"></i>
+        <span><strong>Demo mode:</strong> Enter any valid CNIC format and name to sign in. No real data is stored or verified.</span>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" onclick="signInWithCNIC()" id="cnicBtn">
+        <span id="cnic-btn-label">Sign In <span style="font-size:12px; opacity:0.7; direction:rtl;">داخل ہوں</span></span>
+        <div class="spinner" id="cnic-spinner"></div>
+      </button>
+    </div>
+
+    <div class="login-footer">
+      By signing in you agree to Rahnuma's
+      <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.<br>
+      This is a demonstration portal — not an official government service.
+    </div>
+  </div>
+
+  <script>
+    // ── Format CNIC as user types: XXXXX-XXXXXXX-X ──
+    function formatCNIC(input) {
+      let val = input.value.replace(/\D/g, '');
+      if (val.length > 5)  val = val.slice(0,5)  + '-' + val.slice(5);
+      if (val.length > 13) val = val.slice(0,13) + '-' + val.slice(13);
+      input.value = val.slice(0, 15);
+    }
+
+    function isValidCNIC(val) {
+      return /^\d{5}-\d{7}-\d$/.test(val);
+    }
+
+    // ── Google sign-in (simulated) ──
+    function signInWithGoogle() {
+      const btn = document.getElementById('googleBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner" style="display:block;border-top-color:var(--accent);border-color:var(--border2);"></div> Signing in...';
+
+      const profile = {
+        name: 'Ali Raza',
+        cnic: '35202-1234567-1',
+        email: 'ali.raza@gmail.com',
+        loginMethod: 'google',
+        province: '',
+        city: '',
+        income: '',
+        familySize: '',
+        employment: '',
+        disability: false,
+        widow: false,
+        student: false,
+        pregnant: false,
+        disaster: false,
+        nser: false,
+        joinedDate: new Date().toLocaleDateString('en-PK', { year:'numeric', month:'long', day:'numeric' })
+      };
+      localStorage.setItem('rahnuma_user', JSON.stringify(profile));
+      localStorage.setItem('rahnuma_logged_in', 'true');
+
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+    }
+
+    // ── CNIC sign-in (simulated) ──
+    function signInWithCNIC() {
+      const cnic     = document.getElementById('cnic').value.trim();
+      const fullname = document.getElementById('fullname').value.trim();
+      let valid = true;
+
+      // Validate CNIC
+      const cnicErr = document.getElementById('cnic-error');
+      const cnicEl  = document.getElementById('cnic');
+      if (!isValidCNIC(cnic)) {
+        cnicErr.style.display = 'block';
+        cnicEl.classList.add('error');
+        valid = false;
+      } else {
+        cnicErr.style.display = 'none';
+        cnicEl.classList.remove('error');
+      }
+
+      // Validate name
+      const nameErr = document.getElementById('name-error');
+      const nameEl  = document.getElementById('fullname');
+      if (fullname.length < 3) {
+        nameErr.style.display = 'block';
+        nameEl.classList.add('error');
+        valid = false;
+      } else {
+        nameErr.style.display = 'none';
+        nameEl.classList.remove('error');
+      }
+
+      if (!valid) return;
+
+      // Show loading
+      const btn     = document.getElementById('cnicBtn');
+      const label   = document.getElementById('cnic-btn-label');
+      const spinner = document.getElementById('cnic-spinner');
+      btn.disabled        = true;
+      label.style.display = 'none';
+      spinner.style.display = 'block';
+
+      // Save profile to localStorage
+      const profile = {
+        name: fullname,
+        cnic: cnic,
+        email: '',
+        loginMethod: 'cnic',
+        province: '',
+        city: '',
+        income: '',
+        familySize: '',
+        employment: '',
+        disability: false,
+        widow: false,
+        student: false,
+        pregnant: false,
+        disaster: false,
+        nser: false,
+        joinedDate: new Date().toLocaleDateString('en-PK', { year:'numeric', month:'long', day:'numeric' })
+      };
+      localStorage.setItem('rahnuma_user', JSON.stringify(profile));
+      localStorage.setItem('rahnuma_logged_in', 'true');
+
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    }
+
+    // ── Allow Enter key on CNIC form ──
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') signInWithCNIC();
+    });
+  </script>
+</body>
+</html>

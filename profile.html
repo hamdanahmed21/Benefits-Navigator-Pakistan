@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — My Profile</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── PROFILE HERO ── */
+    .profile-hero {
+      background: linear-gradient(135deg, var(--accent) 0%, #0a5c34 100%);
+      border-radius: var(--radius-xl);
+      padding: clamp(20px, 3vw, 32px);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 28px rgba(13,122,69,0.28);
+      flex-wrap: wrap;
+    }
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+
+    .profile-avatar-large {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 3px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: -0.03em;
+    }
+
+    .profile-hero-info { flex: 1; min-width: 0; }
+    .profile-hero-info h2 {
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .profile-hero-info .urdu {
+      font-size: 12px;
+      opacity: 0.6;
+      direction: rtl;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .profile-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .profile-meta-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+    }
+    .profile-meta-pill i { font-size: 13px; }
+
+    .profile-hero-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .completion-ring-wrap { text-align: center; }
+    .completion-ring-wrap .pct {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      display: block;
+    }
+    .completion-ring-wrap .pct-label {
+      font-size: 11px;
+      opacity: 0.65;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── FORM LAYOUT ── */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .form-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .form-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--green-50);
+    }
+    .form-section-icon {
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .form-section-header h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .form-section-header .urdu-h {
+      font-size: 12px;
+      color: var(--text3);
+      direction: rtl;
+      margin-left: 6px;
+    }
+
+    .form-section-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* toggle checkboxes */
+    .toggle-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      gap: 12px;
+    }
+    .toggle-item:hover { border-color: var(--accent); background: var(--green-50); }
+    .toggle-item.checked { border-color: var(--accent); background: var(--accent-light); }
+    .toggle-item-label { flex: 1; }
+    .toggle-item-label strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .toggle-item-label span {
+      font-size: 11px;
+      color: var(--text3);
+    }
+    .toggle-switch {
+      width: 36px; height: 20px;
+      border-radius: 999px;
+      background: var(--border2);
+      position: relative;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .toggle-item.checked .toggle-switch { background: var(--accent); }
+    .toggle-item.checked .toggle-switch::after { transform: translateX(16px); }
+
+    /* ── RIGHT SIDEBAR cards ── */
+    .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .info-card h4 i { color: var(--accent); font-size: 15px; }
+
+    .completion-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .completion-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      color: var(--text2);
+    }
+    .completion-item i {
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .completion-item.done { color: var(--accent); }
+    .completion-item.done i { color: var(--accent); }
+    .completion-item:not(.done) i { color: var(--border2); }
+
+    .progress-bar-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 12px 0 6px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+    .progress-pct {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* save bar */
+    .save-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 50;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+      margin: 0 calc(-1 * clamp(16px, 3vw, 32px));
+      width: calc(100% + 2 * clamp(16px, 3vw, 32px));
+    }
+    .save-bar-left {
+      font-size: 13px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .save-bar-left i { color: var(--accent); }
+    .save-bar-right { display: flex; gap: 10px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .profile-grid { grid-template-columns: 1fr; }
+      .profile-hero-right { display: none; }
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .profile-meta-pill:nth-child(n+3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <a class="top-bar-logo" href="dashboard.html">
+    <span class="flag">🇵🇰</span>
+    <h1>Rahnuma <span>/ My Profile</span></h1>
+  </a>
+  <div class="top-bar-right">
+    <div class="status-pill">
+      <div class="status-dot online"></div>
+      <span class="status-label">Portal Active</span>
+    </div>
+    <a class="header-avatar" href="profile.html" id="avatarEl" title="My Profile">A</a>
+  </div>
+</header>
+
+<div class="portal-layout">
+
+  <!-- ── SIDEBAR NAV ── -->
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Main</span>
+    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+    <a class="nav-item active" href="profile.html"><i class="ti ti-user-circle"></i> My Profile</a>
+    <a class="nav-item" href="eligibility.html">
+      <i class="ti ti-checklist"></i> Eligibility Check
+      <span class="nav-badge">AI</span>
+    </a>
+    <span class="nav-section-label">Applications</span>
+    <a class="nav-item" href="applications.html">
+      <i class="ti ti-file-text"></i> My Applications
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Find Offices</a>
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="signOut()" style="color:var(--red)">
+      <i class="ti ti-logout"></i> Sign Out
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <h2>My Profile <span style="font-size:14px;color:var(--text3);font-weight:400;direction:rtl;margin-left:8px">میرا پروفائل</span></h2>
+      <p>Your details are used to find programs you may qualify for. Nothing is shared or verified.</p>
+    </div>
+
+    <!-- Profile hero -->
+    <div class="profile-hero">
+      <div class="profile-avatar-large" id="heroAvatar">A</div>
+      <div class="profile-hero-info">
+        <span class="urdu">شہری پروفائل</span>
+        <h2 id="heroName">Loading...</h2>
+        <div class="profile-meta">
+          <div class="profile-meta-pill"><i class="ti ti-id-badge"></i><span id="heroCNIC">—</span></div>
+          <div class="profile-meta-pill"><i class="ti ti-calendar"></i><span id="heroJoined">—</span></div>
+          <div class="profile-meta-pill"><i class="ti ti-login"></i><span id="heroMethod">—</span></div>
+        </div>
+      </div>
+      <div class="profile-hero-right">
+        <div class="completion-ring-wrap">
+          <span class="pct" id="heroPct">0%</span>
+          <span class="pct-label">Complete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+
+      <!-- ── LEFT: Forms ── -->
+      <div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon" style="background:var(--green-100);color:var(--accent)">
+              <i class="ti ti-user"></i>
+            </div>
+            <h3>Personal Information <span class="urdu-h">ذاتی معلومات</span></h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-name">
+                  Full Name <span class="urdu-label">پورا نام</span>
+                </label>
+                <input class="form-input" type="text" id="inp-name" placeholder="Muhammad Ali" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-cnic">
+                  CNIC Number <span class="urdu-label">شناختی کارڈ</span>
+                </label>
+                <input class="form-input" type="text" id="inp-cnic" placeholder="35202-1234567-1" maxlength="15" oninput="formatCNIC(this)" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-phone">
+                  Phone Number <span class="urdu-label">فون نمبر</span>
+                </label>
+                <input class="form-input" type="tel" id="inp-phone" placeholder="0300-1234567" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-email">
+                  Email <span class="urdu-label">ای میل</span>
+                </label>
+                <input class="form-input" type="email" id="inp-email" placeholder="ali@example.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon" style="background:#fef9c3;color:#ca8a04">
+              <i class="ti ti-map-pin"></i>
+            </div>
+            <h3>Location <span class="urdu-h">مقام</span></h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-province">
+                  Province / Territory <span class="urdu-label">صوبہ</span>
+                </label>
+                <select class="form-select" id="inp-province">
+                  <option value="">Select province...</option>
+                  <option value="Punjab">Punjab · پنجاب</option>
+                  <option value="Sindh">Sindh · سندھ</option>
+                  <option value="KPK">Khyber Pakhtunkhwa · خیبر پختونخوا</option>
+                  <option value="Balochistan">Balochistan · بلوچستان</option>
+                  <option value="AJK">Azad Jammu & Kashmir · آزاد کشمیر</option>
+                  <option value="GB">Gilgit-Baltistan · گلگت بلتستان</option>
+                  <option value="ICT">Islamabad (ICT) · اسلام آباد</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-city">
+                  City / District <span class="urdu-label">شہر / ضلع</span>
+                </label>
+                <input class="form-input" type="text" id="inp-city" placeholder="e.g. Rawalpindi" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="inp-address">
+                Address <span class="urdu-label">پتہ</span>
+              </label>
+              <input class="form-input" type="text" id="inp-address" placeholder="Street, Mohalla, Area..." />
+              <span class="form-hint">Used only to suggest nearby offices — not shared anywhere.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Household & Income -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon" style="background:#eff6ff;color:#2563eb">
+              <i class="ti ti-home"></i>
+            </div>
+            <h3>Household & Income <span class="urdu-h">گھرانہ اور آمدنی</span></h3>
+          </div>
+          <div class="form-section-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-family">
+                  Family Size <span class="urdu-label">خاندان کے افراد</span>
+                </label>
+                <select class="form-select" id="inp-family">
+                  <option value="">Select...</option>
+                  <option value="1">1 (Single)</option>
+                  <option value="2-3">2–3 members</option>
+                  <option value="4-6">4–6 members</option>
+                  <option value="7-10">7–10 members</option>
+                  <option value="10+">10+ members</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-income">
+                  Monthly Household Income <span class="urdu-label">ماہانہ آمدنی</span>
+                </label>
+                <select class="form-select" id="inp-income">
+                  <option value="">Select...</option>
+                  <option value="none">No income</option>
+                  <option value="under-15k">Under PKR 15,000</option>
+                  <option value="15-30k">PKR 15,000–30,000</option>
+                  <option value="30-45k">PKR 30,000–45,000</option>
+                  <option value="45-60k">PKR 45,000–60,000</option>
+                  <option value="above-60k">Above PKR 60,000</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="inp-employment">
+                  Employment Status <span class="urdu-label">ملازمت کی صورتحال</span>
+                </label>
+                <select class="form-select" id="inp-employment">
+                  <option value="">Select...</option>
+                  <option value="unemployed">Unemployed · بے روزگار</option>
+                  <option value="daily-wage">Daily wage worker · یومیہ مزدور</option>
+                  <option value="self-employed">Self-employed · خود روزگار</option>
+                  <option value="private">Private sector employee</option>
+                  <option value="govt">Government employee</option>
+                  <option value="farmer">Farmer / Agriculture · کسان</option>
+                  <option value="student">Student · طالب علم</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="inp-housing">
+                  Housing Status <span class="urdu-label">رہائش</span>
+                </label>
+                <select class="form-select" id="inp-housing">
+                  <option value="">Select...</option>
+                  <option value="owned">Own home · ذاتی مکان</option>
+                  <option value="rented">Rented · کرایہ</option>
+                  <option value="family">Living with family</option>
+                  <option value="no-home">No permanent home</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Special Circumstances -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-icon" style="background:#fef2f2;color:#dc2626">
+              <i class="ti ti-heart-handshake"></i>
+            </div>
+            <h3>Special Circumstances <span class="urdu-h">خصوصی حالات</span></h3>
+          </div>
+          <div class="form-section-body">
+            <p style="font-size:13px;color:var(--text2);margin-bottom:4px">
+              These help identify additional programs you may qualify for. Select all that apply.
+            </p>
+            <div class="toggle-group" id="toggleGroup">
+              <div class="toggle-item" data-key="widow" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Widow / Female-headed household</strong>
+                  <span>بیوہ / خاتون سربراہ خاندان — Unlocks BISP Kafalat priority</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+              <div class="toggle-item" data-key="disability" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Person with disability</strong>
+                  <span>معذور فرد — Unlocks STEP, job quota, BISP priority</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+              <div class="toggle-item" data-key="student" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Has children in school / college</strong>
+                  <span>اسکول یا کالج میں بچے — Ehsaas Wazaif, PEEF scholarships</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+              <div class="toggle-item" data-key="pregnant" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Pregnant / lactating mother or child under 2</strong>
+                  <span>حاملہ / دودھ پلانے والی ماں — Ehsaas Nashonuma eligibility</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+              <div class="toggle-item" data-key="disaster" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Affected by flood or disaster</strong>
+                  <span>سیلاب / آفت متاثرہ — PDMA, Ehsaas Emergency Cash</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+              <div class="toggle-item" data-key="nser" onclick="toggleItem(this)">
+                <div class="toggle-item-label">
+                  <strong>Registered in NSER / BISP survey</strong>
+                  <span>NSER سروے میں رجسٹرڈ — Required for most Ehsaas programs</span>
+                </div>
+                <div class="toggle-switch"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT: Sidebar ── -->
+      <div class="sidebar-stack">
+
+        <!-- Completion checklist -->
+        <div class="info-card">
+          <h4><i class="ti ti-checklist"></i> Profile Completion</h4>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="completionBar" style="width:0%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <span class="progress-pct" id="completionPct">0%</span>
+            <span style="font-size:11px;color:var(--text3)">مکمل پروفائل</span>
+          </div>
+          <div class="completion-checklist" id="completionChecklist">
+            <div class="completion-item" data-field="name"><i class="ti ti-circle-check"></i> Full name</div>
+            <div class="completion-item" data-field="cnic"><i class="ti ti-circle-check"></i> CNIC number</div>
+            <div class="completion-item" data-field="province"><i class="ti ti-circle-check"></i> Province</div>
+            <div class="completion-item" data-field="city"><i class="ti ti-circle-check"></i> City</div>
+            <div class="completion-item" data-field="income"><i class="ti ti-circle-check"></i> Monthly income</div>
+            <div class="completion-item" data-field="familySize"><i class="ti ti-circle-check"></i> Family size</div>
+            <div class="completion-item" data-field="employment"><i class="ti ti-circle-check"></i> Employment status</div>
+          </div>
+        </div>
+
+        <!-- Why we ask -->
+        <div class="info-card">
+          <h4><i class="ti ti-shield-check"></i> Why we ask</h4>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;gap:9px;align-items:flex-start">
+              <i class="ti ti-lock" style="color:var(--accent);font-size:14px;margin-top:2px;flex-shrink:0"></i>
+              <p style="font-size:12px;color:var(--text2);line-height:1.55">Your data is stored only in your browser. Nothing is sent to any server except your AI chat messages.</p>
+            </div>
+            <div style="display:flex;gap:9px;align-items:flex-start">
+              <i class="ti ti-sparkles" style="color:var(--accent);font-size:14px;margin-top:2px;flex-shrink:0"></i>
+              <p style="font-size:12px;color:var(--text2);line-height:1.55">The AI uses your profile to give you personalised eligibility results without you having to repeat your situation every time.</p>
+            </div>
+            <div style="display:flex;gap:9px;align-items:flex-start">
+              <i class="ti ti-building-bank" style="color:var(--accent);font-size:14px;margin-top:2px;flex-shrink:0"></i>
+              <p style="font-size:12px;color:var(--text2);line-height:1.55">This is a demonstration portal. Your CNIC is never verified or submitted to any government system.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick links -->
+        <div class="info-card">
+          <h4><i class="ti ti-external-link"></i> Useful Links</h4>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <a href="https://bisp.gov.pk" target="_blank" class="btn btn-outline btn-sm btn-full" style="justify-content:flex-start;gap:9px">
+              <i class="ti ti-world"></i> bisp.gov.pk
+            </a>
+            <a href="https://ehsaas.gov.pk" target="_blank" class="btn btn-outline btn-sm btn-full" style="justify-content:flex-start;gap:9px">
+              <i class="ti ti-world"></i> ehsaas.gov.pk
+            </a>
+            <a href="https://sehat.punjab.gov.pk" target="_blank" class="btn btn-outline btn-sm btn-full" style="justify-content:flex-start;gap:9px">
+              <i class="ti ti-world"></i> sehat.punjab.gov.pk
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Save bar -->
+    <div class="save-bar">
+      <div class="save-bar-left">
+        <i class="ti ti-device-floppy"></i>
+        <span id="saveStatus">Unsaved changes</span>
+      </div>
+      <div class="save-bar-right">
+        <button class="btn btn-outline" onclick="resetForm()">
+          <i class="ti ti-refresh"></i> Reset
+        </button>
+        <button class="btn btn-primary" onclick="saveProfile()">
+          <i class="ti ti-check"></i> Save Profile
+          <span style="font-size:11px;opacity:0.75;direction:rtl">محفوظ کریں</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <a class="mobile-nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Home</a>
+    <a class="mobile-nav-item" href="eligibility.html"><i class="ti ti-sparkles"></i> Eligibility</a>
+    <a class="mobile-nav-item" href="applications.html"><i class="ti ti-file-text"></i> Apps</a>
+    <a class="mobile-nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Offices</a>
+    <a class="mobile-nav-item active" href="profile.html"><i class="ti ti-user"></i> Profile</a>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="ti ti-check"></i>
+  <span id="toastMsg">Profile saved.</span>
+</div>
+
+<script>
+  // ── Auth guard ──
+  if (localStorage.getItem('rahnuma_logged_in') !== 'true') {
+    window.location.href = 'index.html';
+  }
+
+  // ── Load user ──
+  let user = JSON.parse(localStorage.getItem('rahnuma_user') || '{}');
+
+  // Populate hero
+  function renderHero() {
+    const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('avatarEl').textContent   = initials;
+    document.getElementById('heroAvatar').textContent = initials;
+    document.getElementById('heroName').textContent   = user.name || 'Your Name';
+    document.getElementById('heroCNIC').textContent   = user.cnic || '—';
+    document.getElementById('heroJoined').textContent = user.joinedDate || '—';
+    document.getElementById('heroMethod').textContent =
+      user.loginMethod === 'google' ? 'Google account' : 'CNIC login';
+  }
+
+  // Populate form fields
+  function populateForm() {
+    const map = {
+      'inp-name':       'name',
+      'inp-cnic':       'cnic',
+      'inp-phone':      'phone',
+      'inp-email':      'email',
+      'inp-province':   'province',
+      'inp-city':       'city',
+      'inp-address':    'address',
+      'inp-family':     'familySize',
+      'inp-income':     'income',
+      'inp-employment': 'employment',
+      'inp-housing':    'housing',
+    };
+    for (const [id, key] of Object.entries(map)) {
+      const el = document.getElementById(id);
+      if (el && user[key]) el.value = user[key];
+    }
+
+    // Toggles
+    const toggleKeys = ['widow','disability','student','pregnant','disaster','nser'];
+    toggleKeys.forEach(key => {
+      if (user[key]) {
+        const el = document.querySelector(`.toggle-item[data-key="${key}"]`);
+        if (el) el.classList.add('checked');
+      }
+    });
+  }
+
+  // CNIC formatter
+  function formatCNIC(input) {
+    let val = input.value.replace(/\D/g, '');
+    if (val.length > 5)  val = val.slice(0,5)  + '-' + val.slice(5);
+    if (val.length > 13) val = val.slice(0,13) + '-' + val.slice(13);
+    input.value = val.slice(0,15);
+    updateCompletion();
+  }
+
+  // Toggle special circumstances
+  function toggleItem(el) {
+    el.classList.toggle('checked');
+    updateCompletion();
+    markUnsaved();
+  }
+
+  // ── Completion logic ──
+  const completionFields = {
+    name:       () => (document.getElementById('inp-name').value || '').trim().length > 1,
+    cnic:       () => /^\d{5}-\d{7}-\d$/.test(document.getElementById('inp-cnic').value),
+    province:   () => !!document.getElementById('inp-province').value,
+    city:       () => (document.getElementById('inp-city').value || '').trim().length > 0,
+    income:     () => !!document.getElementById('inp-income').value,
+    familySize: () => !!document.getElementById('inp-family').value,
+    employment: () => !!document.getElementById('inp-employment').value,
+  };
+
+  function updateCompletion() {
+    const keys   = Object.keys(completionFields);
+    const done   = keys.filter(k => completionFields[k]());
+    const pct    = Math.round((done.length / keys.length) * 100);
+
+    document.getElementById('completionBar').style.width = pct + '%';
+    document.getElementById('completionPct').textContent = pct + '%';
+    document.getElementById('heroPct').textContent = pct + '%';
+
+    // Update checklist items
+    keys.forEach(key => {
+      const item = document.querySelector(`.completion-item[data-field="${key}"]`);
+      if (!item) return;
+      if (done.includes(key)) {
+        item.classList.add('done');
+        item.querySelector('i').className = 'ti ti-circle-check';
+      } else {
+        item.classList.remove('done');
+        item.querySelector('i').className = 'ti ti-circle';
+      }
+    });
+  }
+
+  // Mark unsaved on any input change
+  function markUnsaved() {
+    document.getElementById('saveStatus').textContent = 'Unsaved changes';
+    document.getElementById('saveStatus').style.color = '#d97706';
+  }
+
+  document.querySelectorAll('.form-input, .form-select').forEach(el => {
+    el.addEventListener('input', () => { updateCompletion(); markUnsaved(); });
+    el.addEventListener('change', () => { updateCompletion(); markUnsaved(); });
+  });
+
+  // ── Save profile ──
+  function saveProfile() {
+    const updated = {
+      ...user,
+      name:       document.getElementById('inp-name').value.trim(),
+      cnic:       document.getElementById('inp-cnic').value.trim(),
+      phone:      document.getElementById('inp-phone').value.trim(),
+      email:      document.getElementById('inp-email').value.trim(),
+      province:   document.getElementById('inp-province').value,
+      city:       document.getElementById('inp-city').value.trim(),
+      address:    document.getElementById('inp-address').value.trim(),
+      familySize: document.getElementById('inp-family').value,
+      income:     document.getElementById('inp-income').value,
+      employment: document.getElementById('inp-employment').value,
+      housing:    document.getElementById('inp-housing').value,
+      // Toggles
+      widow:      !!document.querySelector('.toggle-item[data-key="widow"]').classList.contains('checked'),
+      disability: !!document.querySelector('.toggle-item[data-key="disability"]').classList.contains('checked'),
+      student:    !!document.querySelector('.toggle-item[data-key="student"]').classList.contains('checked'),
+      pregnant:   !!document.querySelector('.toggle-item[data-key="pregnant"]').classList.contains('checked'),
+      disaster:   !!document.querySelector('.toggle-item[data-key="disaster"]').classList.contains('checked'),
+      nser:       !!document.querySelector('.toggle-item[data-key="nser"]').classList.contains('checked'),
+    };
+
+    localStorage.setItem('rahnuma_user', JSON.stringify(updated));
+    user = updated;
+
+    // Update hero
+    renderHero();
+
+    // Show saved state
+    const status = document.getElementById('saveStatus');
+    status.textContent = 'All changes saved ✓';
+    status.style.color = 'var(--accent)';
+
+    showToast('Profile saved successfully!');
+  }
+
+  // Reset form
+  function resetForm() {
+    if (!confirm('Reset all profile fields to last saved values?')) return;
+    populateForm();
+    updateCompletion();
+    document.getElementById('saveStatus').textContent = 'Unsaved changes';
+    document.getElementById('saveStatus').style.color = '';
+  }
+
+  // Toast
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Sign out
+  function signOut() {
+    localStorage.removeItem('rahnuma_logged_in');
+    window.location.href = 'index.html';
+  }
+
+  // ── Init ──
+  renderHero();
+  populateForm();
+  updateCompletion();
+</script>
+</body>
+</html>

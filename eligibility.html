@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — Eligibility Check</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── LAYOUT ── */
+    .elig-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* ── PROFILE INCOMPLETE NOTICE ── */
+    .notice-banner {
+      background: var(--gold-bg);
+      border: 1px solid var(--gold-border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: var(--gold-text);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .notice-banner i { flex-shrink: 0; font-size: 16px; }
+    .notice-banner a { color: var(--gold-text); text-decoration: underline; font-weight: 700; }
+
+    /* ── CHAT CARD ── */
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--green-50);
+      flex-shrink: 0;
+    }
+    .chat-bot-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .chat-header-info { flex: 1; min-width: 0; }
+    .chat-header-info h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+    .chat-header-info p {
+      font-size: 11px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 1px;
+    }
+    .dot-online {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .chat-reset-btn {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .chat-reset-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+    .ai-live-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--green-100);
+      color: var(--accent);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .ai-live-badge i { font-size: 11px; }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .msg { display: flex; gap: 9px; max-width: 84%; }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+    .msg-avatar {
+      width: 27px; height: 27px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .msg.bot .msg-avatar { background: var(--accent-light); color: var(--accent); }
+    .msg.user .msg-avatar { background: var(--accent); color: #fff; }
+    .msg-bubble {
+      padding: 11px 15px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+    .msg.bot .msg-bubble { background: var(--green-50); color: var(--text); border: 1px solid var(--border); border-top-left-radius: 4px; }
+    .msg.user .msg-bubble { background: var(--accent); color: #fff; border-top-right-radius: 4px; }
+    .msg-bubble ul { margin: 8px 0 0 18px; }
+    .msg-bubble li { margin-bottom: 5px; }
+    .msg-bubble code {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    /* context bubble — shown once when profile data is auto-shared with the assistant */
+    .msg.context {
+      align-self: center;
+      max-width: 94%;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .msg.context .ctx-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .msg.context .msg-bubble {
+      background: var(--surface);
+      border: 1.5px dashed var(--border2);
+      color: var(--text2);
+      font-size: 12px;
+      text-align: center;
+      border-radius: var(--radius-md);
+    }
+    .msg-bubble a.inline-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 6px 12px;
+      border-radius: 999px;
+      text-decoration: none;
+    }
+    .msg-bubble a.inline-link:hover { background: var(--green-100); text-decoration: none; }
+    .msg-bubble .chip-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
+    .msg-bubble .mini-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .typing-indicator { display: flex; gap: 4px; padding: 13px 16px; }
+    .typing-indicator span {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text3);
+      animation: typingBounce 1.2s infinite ease-in-out;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.15s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .suggestion-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 18px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+    }
+    .suggestion-chip {
+      white-space: nowrap;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+    .suggestion-chip:hover { background: var(--accent-light); border-color: var(--accent); }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+      align-items: center;
+    }
+    .chat-input-row input { flex: 1; }
+    .chat-send-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .chat-send-btn:hover { background: var(--accent-mid); }
+    .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── SIDEBAR ── */
+    .sidebar-stack { display: flex; flex-direction: column; gap: 16px; }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .info-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .info-card h4 i { color: var(--accent); font-size: 15px; }
+    .info-card h4 .count-pill {
+      margin-left: auto;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+
+    .snap-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 4px; }
+    .snap-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--green-50);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 11.5px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .snap-pill i { font-size: 12px; color: var(--accent); }
+    .snap-pill.empty { color: var(--text3); border-style: dashed; }
+
+    .match-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .match-card:last-child { margin-bottom: 0; }
+    .match-card:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+    .match-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .match-icon {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .match-card-top h5 { font-size: 12.5px; font-weight: 700; color: var(--text); flex: 1; line-height: 1.3; }
+    .match-card p.desc { font-size: 11.5px; color: var(--text2); line-height: 1.5; }
+
+    .more-details { margin-top: 4px; }
+    .more-details summary {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 2px;
+    }
+    .more-details summary::-webkit-details-marker { display: none; }
+    .more-details summary i { font-size: 13px; transition: transform 0.2s; }
+    .more-details[open] summary i { transform: rotate(90deg); }
+    .more-details .match-card { margin-top: 10px; opacity: 0.85; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .elig-grid { grid-template-columns: 1fr; }
+      .chat-card { height: 65vh; min-height: 420px; }
+    }
+    @media (max-width: 600px) {
+      .msg { max-width: 92%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <a class="top-bar-logo" href="dashboard.html">
+    <span class="flag">🇵🇰</span>
+    <h1>Rahnuma <span>/ Eligibility Check</span></h1>
+  </a>
+  <div class="top-bar-right">
+    <div class="status-pill">
+      <div class="status-dot online"></div>
+      <span class="status-label">Portal Active</span>
+    </div>
+    <a class="header-avatar" href="profile.html" id="avatarEl" title="My Profile">A</a>
+  </div>
+</header>
+
+<div class="portal-layout">
+
+  <!-- ── SIDEBAR NAV ── -->
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Main</span>
+    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+    <a class="nav-item" href="profile.html"><i class="ti ti-user-circle"></i> My Profile</a>
+    <a class="nav-item active" href="eligibility.html">
+      <i class="ti ti-checklist"></i> Eligibility Check
+      <span class="nav-badge">AI</span>
+    </a>
+    <span class="nav-section-label">Applications</span>
+    <a class="nav-item" href="applications.html">
+      <i class="ti ti-file-text"></i> My Applications
+      <span class="nav-badge">4</span>
+    </a>
+    <a class="nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Find Offices</a>
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="signOut()" style="color:var(--red)">
+      <i class="ti ti-logout"></i> Sign Out
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h2>Eligibility Check <span style="font-size:14px;color:var(--text3);font-weight:400;direction:rtl;margin-left:8px">اہلیت چیک کریں</span></h2>
+      <p>Chat with Rahnuma about any government program — it already knows what's in your profile.</p>
+    </div>
+
+    <div class="notice-banner" id="incompleteNotice" style="display:none">
+      <i class="ti ti-alert-triangle"></i>
+      <span>Your profile is missing a few details — the assistant will ask you directly in the chat. <a href="profile.html">Complete your profile</a> to skip the questions next time.</span>
+    </div>
+
+    <div class="elig-grid">
+
+      <!-- ── CHAT ── -->
+      <div class="chat-card">
+        <div class="chat-header">
+          <div class="chat-bot-avatar"><i class="ti ti-sparkles"></i></div>
+          <div class="chat-header-info">
+            <h3>Rahnuma Assistant</h3>
+            <p><span class="dot-online"></span> Using your saved profile · سب سے بہتر معلومات</p>
+          </div>
+          <span class="ai-live-badge"><i class="ti ti-bolt"></i> Live AI</span>
+          <button class="chat-reset-btn" onclick="resetChat()" title="Restart conversation">
+            <i class="ti ti-refresh"></i>
+          </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="suggestion-row" id="suggestionRow"></div>
+
+        <div class="chat-input-row">
+          <input class="form-input" type="text" id="chatInput" placeholder="Ask about a program, documents, or how to apply..." />
+          <button class="chat-send-btn" id="sendBtn" onclick="handleSend()">
+            <i class="ti ti-send"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── SIDEBAR ── -->
+      <div class="sidebar-stack">
+
+        <div class="info-card">
+          <h4><i class="ti ti-id-badge"></i> Your Profile Snapshot</h4>
+          <div class="snap-pills" id="snapPills"></div>
+          <a href="profile.html" class="btn btn-outline btn-sm btn-full" style="margin-top:10px"><i class="ti ti-edit"></i> Edit Profile</a>
+        </div>
+
+        <div class="info-card">
+          <h4><i class="ti ti-sparkles"></i> Quick Match Estimate <span class="count-pill" id="matchCount">0</span></h4>
+          <div id="matchedList"></div>
+          <details class="more-details" id="otherProgramsWrap" style="display:none">
+            <summary><i class="ti ti-chevron-right"></i> Programs that look like less of a fit</summary>
+            <div id="notEligibleList"></div>
+          </details>
+          <p style="font-size:11px;color:var(--text3);margin-top:12px;line-height:1.5;display:flex;gap:6px"><i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i> Automated estimate only — chat with the assistant for accurate, personalized guidance.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <a class="mobile-nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Home</a>
+    <a class="mobile-nav-item active" href="eligibility.html"><i class="ti ti-sparkles"></i> Eligibility</a>
+    <a class="mobile-nav-item" href="applications.html"><i class="ti ti-file-text"></i> Apps</a>
+    <a class="mobile-nav-item" href="offices.html"><i class="ti ti-map-pin"></i> Offices</a>
+    <a class="mobile-nav-item" href="profile.html"><i class="ti ti-user"></i> Profile</a>
+  </div>
+</nav>
+
+<script>
+  // ── Auth guard ──
+  if (localStorage.getItem('rahnuma_logged_in') !== 'true') {
+    window.location.href = 'index.html';
+  }
+  let user = JSON.parse(localStorage.getItem('rahnuma_user') || '{}');
+  (function renderHeaderAvatar(){
+    const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('avatarEl').textContent = initials;
+  })();
+
+  // ── Income helper ──
+  const INCOME_LEVELS = ['none', 'under-15k', '15-30k', '30-45k', '45-60k', 'above-60k'];
+  function incomeIndex() {
+    const i = INCOME_LEVELS.indexOf(user.income);
+    return i; // -1 if unset
+  }
+  const INCOME_LABELS = {
+    'none': 'No income', 'under-15k': 'Under PKR 15k', '15-30k': 'PKR 15–30k',
+    '30-45k': 'PKR 30–45k', '45-60k': 'PKR 45–60k', 'above-60k': 'Above PKR 60k'
+  };
+  const EMPLOYMENT_LABELS = {
+    unemployed: 'Unemployed', 'daily-wage': 'Daily wage worker', 'self-employed': 'Self-employed',
+    private: 'Private sector', govt: 'Government employee', farmer: 'Farmer', student: 'Student'
+  };
+
+  // ── Program knowledge base ──
+  const PROGRAMS = [
+    {
+      id: 'bisp', name: 'BISP Kafalat Program', urdu: 'بینظیر کفالت پروگرام', icon: '💰',
+      bg: 'var(--green-100)', fg: 'var(--accent)',
+      benefit: 'Quarterly cash stipend of roughly PKR 8,750–10,500 for eligible women heads of household.',
+      documents: ['CNIC (original + copy)', 'NSER registration slip', 'Proof of residence', 'Bank or mobile wallet details'],
+      apply: 'Apply at your nearest Tehsil/BISP office, or check status via 8171 SMS service. NSER registration is required first if you haven\'t completed one.',
+      keywords: ['bisp', 'kafalat', 'cash transfer', 'stipend'],
+      check() {
+        const idx = incomeIndex();
+        if (idx === -1) return { status: 'possible', reason: "I need your monthly income to confirm this — it's the main factor for Kafalat." };
+        if (idx <= 2 && (user.widow || user.employment === 'unemployed' || user.employment === 'daily-wage')) {
+          return { status: 'eligible', reason: 'Your household income and circumstances match Kafalat\'s targeting criteria.' };
+        }
+        if (idx <= 2) {
+          return { status: 'possible', reason: "Your income fits, but you'll also need to be registered through the NSER household survey — confirm this at your local office." };
+        }
+        return { status: 'not_eligible', reason: 'Household income appears to be above the Kafalat threshold.' };
+      }
+    },
+    {
+      id: 'nashonuma', name: 'Benazir Nashonuma', urdu: 'بینظیر نشوونما', icon: '🤱',
+      bg: '#fdf2f8', fg: '#be185d',
+      benefit: 'Nutrition stipend and health top-ups for pregnant/lactating mothers and children under 2.',
+      documents: ['CNIC (original + copy)', 'Mother & Child Health card', 'Proof of pregnancy/child\'s birth record'],
+      apply: 'Register at your nearest Nashonuma center, usually attached to a BISP or basic health unit.',
+      keywords: ['nashonuma', 'pregnant', 'lactating', 'nutrition', 'newborn', 'baby'],
+      check() {
+        if (!user.pregnant) return { status: 'not_eligible', reason: 'This program is specifically for pregnant or lactating mothers, or children under 2.' };
+        const idx = incomeIndex();
+        if (idx === -1) return { status: 'possible', reason: 'Your household qualifies on the maternal/child criterion — confirm income to finalize.' };
+        if (idx <= 3) return { status: 'eligible', reason: 'You meet both the maternal/child and income criteria.' };
+        return { status: 'possible', reason: 'You meet the maternal/child criterion; confirm at your nearest center since this is mainly income-targeted.' };
+      }
+    },
+    {
+      id: 'wazaif', name: 'Ehsaas Taleemi Wazaif', urdu: 'احساس تعلیمی وظائف', icon: '🎓',
+      bg: '#f5f3ff', fg: '#7c3aed',
+      benefit: 'Quarterly education stipend paid per school-enrolled child, to keep kids in school.',
+      documents: ['CNIC (original + copy)', 'School enrollment certificate', "Child's B-Form"],
+      apply: 'Apply through your child\'s school administration, who coordinate enrollment with Ehsaas.',
+      keywords: ['wazaif', 'wazifa', 'education stipend', 'school stipend', 'taleemi'],
+      check() {
+        if (!user.student) return { status: 'not_eligible', reason: "This is for households with children currently in school or college." };
+        const idx = incomeIndex();
+        if (idx === -1) return { status: 'possible', reason: 'You have school-going children — confirm income to check the stipend tier.' };
+        if (idx <= 3) return { status: 'eligible', reason: 'You have school-going children and income within the qualifying range.' };
+        return { status: 'possible', reason: 'You have school-going children, but income may be above the usual threshold — worth confirming locally.' };
+      }
+    },
+    {
+      id: 'sehat', name: 'Sehat Sahulat Program', urdu: 'صحت سہولت پروگرام', icon: '🏥',
+      bg: 'var(--blue-bg)', fg: 'var(--blue)',
+      benefit: 'Free inpatient hospital treatment, typically up to PKR 1,000,000 per family per year.',
+      documents: ['CNIC (original + copy)', 'Family registration certificate'],
+      apply: 'Most eligible families are auto-enrolled and issued a Sehat Card; verify your status at any partner hospital or via the Sehat Sahulat helpline.',
+      keywords: ['sehat', 'health card', 'hospital', 'sahulat', 'medical'],
+      check() {
+        const idx = incomeIndex();
+        if (idx === -1) return { status: 'possible', reason: "Sehat Sahulat covers most low and middle-income families — share your income for a precise check." };
+        if (idx <= 4) return { status: 'eligible', reason: 'Your household income is within the range typically covered by Sehat Sahulat.' };
+        return { status: 'possible', reason: 'Coverage and thresholds vary by province — check with your district health office.' };
+      }
+    },
+    {
+      id: 'peef', name: 'PEEF Scholarship', urdu: 'پیف وظیفہ', icon: '📚',
+      bg: '#fff7ed', fg: '#c2410c',
+      benefit: 'Merit-cum-need based scholarships for Punjab students from school through university level.',
+      documents: ['CNIC/B-Form', 'Domicile (Punjab)', 'Latest mark sheet / result card', 'Income certificate'],
+      apply: 'Apply online via the Punjab Educational Endowment Fund portal during the annual application window.',
+      keywords: ['peef', 'scholarship', 'punjab scholarship'],
+      check() {
+        if (!user.student) return { status: 'not_eligible', reason: 'This is a scholarship for currently enrolled students.' };
+        if (user.province && user.province !== 'Punjab') return { status: 'not_eligible', reason: 'PEEF is a Punjab-specific provincial program.' };
+        const idx = incomeIndex();
+        if (!user.province) return { status: 'possible', reason: "PEEF is Punjab-only — confirm your province to check." };
+        if (idx === -1) return { status: 'possible', reason: 'You\'re in Punjab and studying — confirm income to finalize.' };
+        if (idx <= 3) return { status: 'eligible', reason: 'You\'re a student in Punjab within PEEF\'s income range.' };
+        return { status: 'possible', reason: 'You\'re a student in Punjab — income may be above the usual threshold, but merit-based awards can still apply.' };
+      }
+    },
+    {
+      id: 'emergency', name: 'Ehsaas Emergency Cash', urdu: 'احساس ایمرجنسی کیش', icon: '⚡',
+      bg: 'var(--red-bg)', fg: 'var(--red)',
+      benefit: 'One-time emergency relief payment for households in declared disaster-affected areas.',
+      documents: ['CNIC (original + copy)', 'Damage assessment form from local authority'],
+      apply: 'Apply through your district PDMA office once your area is officially declared disaster-affected.',
+      keywords: ['emergency cash', 'disaster', 'flood relief', 'pdma'],
+      check() {
+        if (user.disaster) return { status: 'eligible', reason: 'You\'ve indicated your household was affected by a flood or disaster.' };
+        return { status: 'not_eligible', reason: 'This program only activates for officially declared disaster-affected areas.' };
+      }
+    },
+    {
+      id: 'step', name: 'STEP — Special Persons Program', urdu: 'خصوصی افراد پروگرام', icon: '♿',
+      bg: '#eef2ff', fg: '#4338ca',
+      benefit: 'Skills training, job placement support, and a reserved public-sector employment quota.',
+      documents: ['CNIC (original + copy)', 'Disability certificate from a registered medical board'],
+      apply: 'Register with your provincial Department of Social Welfare & Special Education.',
+      keywords: ['step', 'disability', 'special persons', 'disabled', 'pwd'],
+      check() {
+        if (user.disability) return { status: 'eligible', reason: 'You\'ve indicated a household member with a disability.' };
+        return { status: 'not_eligible', reason: 'This program is specifically for persons with disabilities.' };
+      }
+    },
+    {
+      id: 'rashan', name: 'Ehsaas Rashan Programme', urdu: 'احساس راشن پروگرام', icon: '🛒',
+      bg: '#fefce8', fg: '#a16207',
+      benefit: 'Subsidized monthly flour, pulses and cooking oil for the lowest-income households.',
+      documents: ['CNIC (original + copy)', 'NSER registration'],
+      apply: 'Redeemable at partner Utility Stores using your CNIC or BISP card.',
+      keywords: ['rashan', 'ration', 'flour subsidy', 'food subsidy'],
+      check() {
+        const idx = incomeIndex();
+        if (idx === -1) return { status: 'possible', reason: 'This is targeted at the lowest income bracket — share your income to confirm.' };
+        if (idx <= 2) return { status: 'eligible', reason: 'Your household income is within the Rashan Programme\'s targeted bracket.' };
+        return { status: 'not_eligible', reason: 'Household income appears above this program\'s threshold.' };
+      }
+    },
+  ];
+
+  // ── Run eligibility evaluation ──
+  let evalResults = [];
+  function evaluateAll() {
+    evalResults = PROGRAMS.map(p => ({ ...p, result: p.check() }));
+    return evalResults;
+  }
+
+  // ── Profile snapshot pills ──
+  function renderSnapshot() {
+    const pills = [];
+    if (user.province) pills.push({ icon: 'ti-map-pin', text: user.province });
+    if (user.familySize) pills.push({ icon: 'ti-users', text: user.familySize + ' member(s)' });
+    if (user.income) pills.push({ icon: 'ti-coin', text: INCOME_LABELS[user.income] });
+    if (user.employment) pills.push({ icon: 'ti-briefcase', text: EMPLOYMENT_LABELS[user.employment] });
+    if (user.widow) pills.push({ icon: 'ti-heart-handshake', text: 'Widow / female head' });
+    if (user.disability) pills.push({ icon: 'ti-accessible', text: 'Disability in household' });
+    if (user.student) pills.push({ icon: 'ti-school', text: 'School-going children' });
+    if (user.pregnant) pills.push({ icon: 'ti-baby-carriage', text: 'Pregnant / child under 2' });
+    if (user.disaster) pills.push({ icon: 'ti-cloud-storm', text: 'Disaster-affected' });
+    if (user.nser) pills.push({ icon: 'ti-clipboard-check', text: 'NSER registered' });
+
+    const wrap = document.getElementById('snapPills');
+    if (pills.length === 0) {
+      wrap.innerHTML = `<div class="snap-pill empty"><i class="ti ti-alert-circle"></i> No profile details yet</div>`;
+    } else {
+      wrap.innerHTML = pills.map(p => `<div class="snap-pill"><i class="ti ${p.icon}"></i> ${p.text}</div>`).join('');
+    }
+
+    const missingCore = !user.income || !user.province || !user.familySize;
+    document.getElementById('incompleteNotice').style.display = missingCore ? 'flex' : 'none';
+  }
+
+  // ── Matched programs sidebar ──
+  function renderMatches() {
+    const eligible = evalResults.filter(r => r.result.status === 'eligible');
+    const possible = evalResults.filter(r => r.result.status === 'possible');
+    const notEligible = evalResults.filter(r => r.result.status === 'not_eligible');
+
+    document.getElementById('matchCount').textContent = eligible.length + possible.length;
+
+    const buildMatchCard = (r, badgeCls, badgeLabel) => `
+      <div class="match-card" onclick="askAboutProgram('${r.id}')">
+        <div class="match-card-top">
+          <div class="match-icon" style="background:${r.bg};color:${r.fg}">${r.icon}</div>
+          <h5>${r.name}</h5>
+        </div>
+        <span class="badge ${badgeCls}" style="margin-bottom:6px">${badgeLabel}</span>
+        <p class="desc">${r.result.reason}</p>
+      </div>
+    `;
+
+    const matchedHTML = [
+      ...eligible.map(r => buildMatchCard(r, 'badge-green', 'May Qualify')),
+      ...possible.map(r => buildMatchCard(r, 'badge-gold', 'Possible Match')),
+    ].join('');
+
+    document.getElementById('matchedList').innerHTML = matchedHTML || `
+      <div class="empty-state" style="padding:24px 8px">
+        <i class="ti ti-search-off" style="font-size:28px"></i>
+        <p style="font-size:12.5px">No matches yet — complete your profile or ask me a question.</p>
+      </div>`;
+
+    const wrap = document.getElementById('otherProgramsWrap');
+    if (notEligible.length > 0) {
+      wrap.style.display = 'block';
+      document.getElementById('notEligibleList').innerHTML = notEligible.map(r => buildMatchCard(r, 'badge-gray', 'Likely Not a Match')).join('');
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // CHAT ENGINE — talks to the real Flask/Groq backend (app.py)
+  // ──────────────────────────────────────────
+  // Deployed backend: https://rahnuma-production.up.railway.app/chat
+  // This page is served BY that same Flask app, so a relative path reaches it directly.
+  // If you ever host the frontend separately from the backend, change this to the
+  // full backend URL above instead of the relative path.
+  const BACKEND_URL = '/chat';
+
+  const chatEl = document.getElementById('chatMessages');
+  const HISTORY_KEY = 'rahnuma_eligibility_chat';
+  let conversationHistory = []; // [{role:'user'|'assistant', content:'...'}]
+
+  function botInitials() { return '<i class="ti ti-sparkles"></i>'; }
+  function userInitials() {
+    return (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Converts the assistant's **bold** markdown + line breaks into safe HTML.
+  function renderMarkdown(text) {
+    if (!text) return '';
+    let safe = escapeHtml(text);
+    safe = safe.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    safe = safe.replace(/\n/g, '<br>');
+    return safe;
+  }
+
+  function addMessage(role, html) {
+    const div = document.createElement('div');
+    div.className = `msg ${role}`;
+    if (role === 'context') {
+      div.innerHTML = `
+        <div class="ctx-label"><i class="ti ti-shield-check"></i> Shared automatically from your profile</div>
+        <div class="msg-bubble">${html}</div>
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="msg-avatar">${role === 'bot' ? botInitials() : userInitials()}</div>
+        <div class="msg-bubble">${html}</div>
+      `;
+    }
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  let typingEl = null;
+  function showTyping() {
+    typingEl = document.createElement('div');
+    typingEl.className = 'msg bot';
+    typingEl.innerHTML = `
+      <div class="msg-avatar">${botInitials()}</div>
+      <div class="msg-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>
+    `;
+    chatEl.appendChild(typingEl);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+  function hideTyping() {
+    if (typingEl) { typingEl.remove(); typingEl = null; }
+  }
+
+  function setComposerEnabled(enabled) {
+    document.getElementById('sendBtn').disabled = !enabled;
+    document.getElementById('chatInput').disabled = !enabled;
+    if (enabled) document.getElementById('chatInput').focus();
+  }
+
+  // ── Persist / rehydrate conversation across navigation ──
+  // conversationHistory holds the raw {role, content} turns sent to/from the backend.
+  // We also keep a parallel array of rendered bubbles (role + html) so a page reload
+  // can redraw the chat exactly as it looked, without re-calling the backend.
+  let renderedLog = []; // [{role:'bot'|'user'|'context', html:'...'}]
+
+  function persistChat() {
+    try {
+      sessionStorage.setItem(HISTORY_KEY, JSON.stringify({
+        conversationHistory,
+        renderedLog,
+      }));
+    } catch (e) {
+      // sessionStorage may be unavailable (e.g. private browsing) — fail silently,
+      // the chat just won't persist across navigation in that case.
+    }
+  }
+
+  function loadPersistedChat() {
+    try {
+      const raw = sessionStorage.getItem(HISTORY_KEY);
+      if (!raw) return false;
+      const saved = JSON.parse(raw);
+      if (!saved || !Array.isArray(saved.conversationHistory) || saved.conversationHistory.length === 0) return false;
+      conversationHistory = saved.conversationHistory;
+      renderedLog = saved.renderedLog || [];
+      renderedLog.forEach(entry => addMessage(entry.role, entry.html));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Wrap addMessage so every rendered bubble is also logged for persistence.
+  const _addMessage = addMessage;
+  addMessage = function(role, html) {
+    _addMessage(role, html);
+    renderedLog.push({ role, html });
+    persistChat();
+  };
+
+  // ── Build the profile context shared with the assistant on the first turn ──
+  function buildContextMessage() {
+    const lines = [];
+    if (user.province) lines.push(`Province: ${user.province}`);
+    if (user.familySize) lines.push(`Family size: ${user.familySize} members`);
+    if (user.income) lines.push(`Monthly household income: ${INCOME_LABELS[user.income]}`);
+    if (user.employment) lines.push(`Employment status: ${EMPLOYMENT_LABELS[user.employment]}`);
+    lines.push(`CNIC: ${user.cnic ? 'Valid CNIC available' : 'Not provided yet'}`);
+
+    const notes = [];
+    if (user.widow) notes.push('widow-headed household');
+    if (user.disability) notes.push('a household member has a disability');
+    if (user.student) notes.push('has children in school or college');
+    if (user.pregnant) notes.push('pregnant or lactating mother, or a child under 2');
+    if (user.disaster) notes.push('affected by a flood or disaster');
+    if (user.nser) notes.push('registered in the NSER/BISP survey');
+    if (notes.length) lines.push(`Household notes: ${notes.join(', ')}`);
+
+    if (lines.length === 0) {
+      return { display: null, payload: 'Hi' };
+    }
+
+    const payload = `Here is my saved profile — please use it instead of asking me to repeat it:\n${lines.join('\n')}\nGo ahead and ask me anything else you still need (like my main need) before recommending programs.`;
+    return { display: lines.join(' · '), payload };
+  }
+
+  // ── Call the backend with the full running conversation ──
+  async function callBackend(history) {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || `Server returned ${res.status}`);
+    }
+    return data.reply;
+  }
+
+  // ── Push a user turn to history, hit the backend, render the reply ──
+  async function sendUserTurn(payloadText) {
+    conversationHistory.push({ role: 'user', content: payloadText });
+    persistChat();
+    showTyping();
+    setComposerEnabled(false);
+    try {
+      const reply = await callBackend(conversationHistory);
+      hideTyping();
+      addMessage('bot', renderMarkdown(reply));
+      conversationHistory.push({ role: 'assistant', content: reply });
+      persistChat();
+    } catch (err) {
+      hideTyping();
+      addMessage('bot', `⚠️ I couldn't reach the Rahnuma server right now. Please try again in a moment.`);
+    } finally {
+      setComposerEnabled(true);
+    }
+  }
+
+  // ── Send handling ──
+  function handleSend() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    addMessage('user', renderMarkdown(text));
+    input.value = '';
+    sendUserTurn(text);
+  }
+
+  document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSend();
+  });
+
+  function sendSuggestion(text) {
+    addMessage('user', renderMarkdown(text));
+    sendUserTurn(text);
+  }
+
+  function askAboutProgram(id) {
+    const p = PROGRAMS.find(x => x.id === id);
+    if (!p) return;
+    const text = `Tell me more about ${p.name} and whether I may qualify.`;
+    addMessage('user', renderMarkdown(text));
+    sendUserTurn(text);
+  }
+
+  // ── Suggestion chips ──
+  const SUGGESTIONS = [
+    'Am I eligible for BISP?',
+    'What about Sehat Sahulat?',
+    'Education stipends for my kids',
+    'What documents do I need?',
+    'What programs might I qualify for?',
+  ];
+  function renderSuggestions() {
+    document.getElementById('suggestionRow').innerHTML = SUGGESTIONS.map(s =>
+      `<button class="suggestion-chip" onclick="sendSuggestion('${s.replace(/'/g, "\\'")}')">${s}</button>`
+    ).join('');
+  }
+
+  // ── Reset / Init flow ──
+  function resetChat() {
+    chatEl.innerHTML = '';
+    conversationHistory = [];
+    renderedLog = [];
+    try { sessionStorage.removeItem(HISTORY_KEY); } catch (e) {}
+    startConversation();
+  }
+
+  async function startConversation() {
+    const ctx = buildContextMessage();
+    if (ctx.display) {
+      addMessage('context', renderMarkdown(ctx.display));
+    }
+    await sendUserTurn(ctx.payload);
+  }
+
+  // ── Init ──
+  renderSnapshot();
+  evaluateAll();
+  renderMatches();
+  renderSuggestions();
+
+  // Only kick off a fresh conversation (and re-send profile context) if there's
+  // nothing saved from a previous visit in this session — otherwise rehydrate it.
+  if (!loadPersistedChat()) {
+    startConversation();
+  }
+
+  function signOut() {
+    localStorage.removeItem('rahnuma_logged_in');
+    localStorage.removeItem('rahnuma_user');
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

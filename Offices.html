@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Rahnuma — Find Offices</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d7a45'/%3E%3Ctext x='32' y='46' font-size='36' text-anchor='middle' fill='white'%3E🇵🇰%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+
+    /* ── SEARCH BAR ── */
+    .search-bar-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+    .search-input-wrap i {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .search-input-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 40px;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(13,122,69,0.1);
+    }
+    .search-input-wrap input::placeholder { color: var(--text3); }
+
+    .filter-select {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      cursor: pointer;
+      min-width: 160px;
+      transition: border-color 0.15s;
+    }
+    .filter-select:focus { border-color: var(--accent); }
+
+    /* ── HELPLINE CARDS (top row) ── */
+    .helplines-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .helpline-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+    .helpline-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .helpline-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .helpline-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .helpline-desc {
+      font-size: 11px;
+      color: var(--text3);
+      line-height: 1.4;
+    }
+    .helpline-number {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .helpline-number:hover { color: var(--accent-mid); text-decoration: none; }
+    .helpline-number i { font-size: 16px; }
+
+    /* ── RESULTS COUNT ── */
+    .results-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .results-meta span {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .results-meta .urdu {
+      font-size: 11px;
+      color: var(--text3);
+      direction: rtl;
+      font-family: var(--urdu-font);
+    }
+
+    /* ── OFFICE CARDS ── */
+    .offices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .office-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .office-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border2);
+    }
+
+    .office-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .office-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .office-card-district {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .office-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+    .office-detail i {
+      font-size: 14px;
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .office-card-footer {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text3);
+    }
+    .no-results i { font-size: 40px; margin-bottom: 12px; display: block; }
+    .no-results p { font-size: 14px; }
+
+    /* ── PROVINCE TABS ── */
+    .province-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .province-tab {
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .province-tab:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+    .province-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .helplines-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 650px) {
+      .offices-grid { grid-template-columns: 1fr; }
+      .helplines-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 440px) {
+      .helplines-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<header class="top-bar">
+  <a class="top-bar-logo" href="dashboard.html">
+    <span class="flag">🇵🇰</span>
+    <h1>Rahnuma <span>/ Find Offices</span></h1>
+  </a>
+  <div class="top-bar-right">
+    <div class="status-pill">
+      <div class="status-dot online"></div>
+      <span class="status-label">Portal Active</span>
+    </div>
+    <a class="header-avatar" href="profile.html" id="avatarEl">A</a>
+  </div>
+</header>
+
+<div class="portal-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">Main</span>
+    <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+    <a class="nav-item" href="profile.html"><i class="ti ti-user-circle"></i> My Profile</a>
+    <a class="nav-item" href="eligibility.html">
+      <i class="ti ti-checklist"></i> Eligibility Check
+      <span class="nav-badge">AI</span>
+    </a>
+    <span class="nav-section-label">Applications</span>
+    <a class="nav-item" href="applications.html">
+      <i class="ti ti-file-text"></i> My Applications
+      <span class="nav-badge">3</span>
+    </a>
+    <a class="nav-item active" href="offices.html"><i class="ti ti-map-pin"></i> Find Offices</a>
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="signOut()" style="color:var(--red)">
+      <i class="ti ti-logout"></i> Sign Out
+    </button>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h2>Find Offices & Helplines
+        <span style="font-size:14px;color:var(--text3);font-weight:400;direction:rtl;margin-left:8px;font-family:var(--urdu-font)">دفاتر اور ہیلپ لائنز</span>
+      </h2>
+      <p>Locate BISP, Ehsaas and Sehat Sahulat offices near you. All helplines are toll-free.</p>
+    </div>
+
+    <!-- Helpline cards -->
+    <div id="helplines" class="helplines-row">
+      <div class="helpline-card">
+        <div class="helpline-icon" style="background:var(--green-100);color:var(--accent)">
+          <i class="ti ti-building-bank"></i>
+        </div>
+        <div>
+          <div class="helpline-name">BISP Helpline</div>
+          <div class="helpline-desc">Income support, Kafalat, NSER survey queries</div>
+        </div>
+        <a class="helpline-number" href="tel:0800-26477">
+          <i class="ti ti-phone-call"></i> 0800-26477
+        </a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="helpline-icon" style="background:#fef2f2;color:#dc2626">
+          <i class="ti ti-heart-plus"></i>
+        </div>
+        <div>
+          <div class="helpline-name">Sehat Sahulat</div>
+          <div class="helpline-desc">Health card, empanelled hospitals, Sehat Card Plus</div>
+        </div>
+        <a class="helpline-number" href="tel:03111117476" style="color:#dc2626">
+          <i class="ti ti-phone-call"></i> 0311-111-7476
+        </a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="helpline-icon" style="background:#eff6ff;color:#2563eb">
+          <i class="ti ti-hand-heart"></i>
+        </div>
+        <div>
+          <div class="helpline-name">Ehsaas Program</div>
+          <div class="helpline-desc">All Ehsaas schemes, ration, scholarships, Nashonuma</div>
+        </div>
+        <a class="helpline-number" href="tel:080026477" style="color:#2563eb">
+          <i class="ti ti-phone-call"></i> 080026477
+        </a>
+      </div>
+
+      <div class="helpline-card">
+        <div class="helpline-icon" style="background:#fef9c3;color:#ca8a04">
+          <i class="ti ti-alert-triangle"></i>
+        </div>
+        <div>
+          <div class="helpline-name">PDMA Emergency</div>
+          <div class="helpline-desc">Disaster relief, flood assistance, emergency cash</div>
+        </div>
+        <a class="helpline-number" href="tel:1700" style="color:#ca8a04">
+          <i class="ti ti-phone-call"></i> 1700
+        </a>
+      </div>
+    </div>
+
+    <!-- Search & filter -->
+    <div class="search-bar-wrap">
+      <div class="search-input-wrap">
+        <i class="ti ti-search"></i>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by city, district or office name..."
+          oninput="filterOffices()"
+        />
+      </div>
+      <select class="filter-select" id="typeFilter" onchange="filterOffices()">
+        <option value="">All types</option>
+        <option value="BISP">BISP offices</option>
+        <option value="Ehsaas">Ehsaas centres</option>
+        <option value="Sehat">Sehat Sahulat</option>
+        <option value="NAVTTC">NAVTTC</option>
+      </select>
+    </div>
+
+    <!-- Province filter tabs — data-province holds the value used in OFFICES array -->
+    <div class="province-tabs" id="provinceTabs">
+      <button class="province-tab active" data-province="" onclick="filterProvince(this)">All Provinces</button>
+      <button class="province-tab" data-province="Punjab" onclick="filterProvince(this)">Punjab</button>
+      <button class="province-tab" data-province="Sindh" onclick="filterProvince(this)">Sindh</button>
+      <button class="province-tab" data-province="KPK" onclick="filterProvince(this)">KPK</button>
+      <button class="province-tab" data-province="Balochistan" onclick="filterProvince(this)">Balochistan</button>
+      <button class="province-tab" data-province="ICT" onclick="filterProvince(this)">Islamabad</button>
+      <button class="province-tab" data-province="AJK" onclick="filterProvince(this)">AJK</button>
+    </div>
+
+    <!-- Results meta -->
+    <div class="results-meta">
+      <span id="resultsCount">Showing all offices</span>
+      <span class="urdu" id="userProvince"></span>
+    </div>
+
+    <!-- Office cards grid -->
+    <div class="offices-grid" id="officesGrid"></div>
+
+  </main>
+</div>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <a class="mobile-nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i> Home</a>
+    <a class="mobile-nav-item" href="eligibility.html"><i class="ti ti-sparkles"></i> Eligibility</a>
+    <a class="mobile-nav-item" href="applications.html"><i class="ti ti-file-text"></i> Apps</a>
+    <a class="mobile-nav-item active" href="offices.html"><i class="ti ti-map-pin"></i> Offices</a>
+    <a class="mobile-nav-item" href="profile.html"><i class="ti ti-user"></i> Profile</a>
+  </div>
+</nav>
+
+<script>
+  // ── Auth guard ──
+  if (localStorage.getItem('rahnuma_logged_in') !== 'true') {
+    window.location.href = 'index.html';
+  }
+
+  // ── User ──
+  const user = JSON.parse(localStorage.getItem('rahnuma_user') || '{}');
+  const initials = (user.name || 'U').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('avatarEl').textContent = initials;
+
+  // ── Office data ──
+  const OFFICES = [
+    // ── PUNJAB ──
+    { name: 'BISP Divisional Office Lahore',         district: 'Lahore',      province: 'Punjab',      type: 'BISP',    address: 'Plot 5, Gulberg III, Lahore',                       phone: '042-35761234', hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'BISP Tehsil Office Rawalpindi',          district: 'Rawalpindi',  province: 'Punjab',      type: 'BISP',    address: 'Saddar Road, near GPO, Rawalpindi',                 phone: '051-5565432',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Facilitation Centre Faisalabad', district: 'Faisalabad',  province: 'Punjab',      type: 'Ehsaas', address: 'D-Ground, Peoples Colony, Faisalabad',              phone: '041-8723456',  hours: 'Mon–Sat, 8am–4pm' },
+    { name: 'BISP District Office Multan',            district: 'Multan',      province: 'Punjab',      type: 'BISP',    address: 'Kutchery Road, Civil Lines, Multan',                phone: '061-9210432',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Sehat Sahulat Office Lahore',            district: 'Lahore',      province: 'Punjab',      type: 'Sehat',  address: 'Punjab Health Initiative, 33-Aikman Road, Lahore', phone: '042-99204757', hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'NAVTTC Regional Office Lahore',          district: 'Lahore',      province: 'Punjab',      type: 'NAVTTC', address: 'Block D, Gulberg II, Lahore',                       phone: '042-35761000', hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'BISP Tehsil Office Gujranwala',          district: 'Gujranwala',  province: 'Punjab',      type: 'BISP',    address: 'Civil Lines, Gujranwala',                           phone: '055-3843210',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Centre Bahawalpur',               district: 'Bahawalpur',  province: 'Punjab',      type: 'Ehsaas', address: 'Model Town B, Bahawalpur',                          phone: '062-2880432',  hours: 'Mon–Sat, 8am–4pm' },
+
+    // ── SINDH ──
+    { name: 'BISP Provincial Office Karachi',         district: 'Karachi',     province: 'Sindh',       type: 'BISP',    address: 'Plot 32, Block 6, PECHS, Karachi',                  phone: '021-34543210', hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Facilitation Centre Hyderabad',  district: 'Hyderabad',   province: 'Sindh',       type: 'Ehsaas', address: 'Latifabad Unit 8, Hyderabad',                       phone: '022-3432100',  hours: 'Mon–Sat, 8am–4pm' },
+    { name: 'BISP District Office Sukkur',            district: 'Sukkur',      province: 'Sindh',       type: 'BISP',    address: 'Near DC Office, Military Road, Sukkur',             phone: '071-5631245',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Sehat Sahulat Office Karachi',           district: 'Karachi',     province: 'Sindh',       type: 'Sehat',  address: 'State Life Building, Abdullah Haroon Road, Karachi', phone: '021-99206000', hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'BISP Tehsil Office Larkana',             district: 'Larkana',     province: 'Sindh',       type: 'BISP',    address: 'Station Road, Larkana',                             phone: '074-4056789',  hours: 'Mon–Fri, 9am–5pm' },
+
+    // ── KPK ──
+    { name: 'BISP Provincial Office Peshawar',        district: 'Peshawar',    province: 'KPK',         type: 'BISP',    address: 'Phase 5, Hayatabad, Peshawar',                      phone: '091-9216543',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Centre Mardan',                   district: 'Mardan',      province: 'KPK',         type: 'Ehsaas', address: 'Circular Road, Mardan',                             phone: '0937-871234',  hours: 'Mon–Sat, 8am–4pm' },
+    { name: 'BISP District Office Abbottabad',        district: 'Abbottabad',  province: 'KPK',         type: 'BISP',    address: 'Mansehra Road, Abbottabad',                         phone: '0992-340210',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'NAVTTC Regional Office Peshawar',        district: 'Peshawar',    province: 'KPK',         type: 'NAVTTC', address: 'GT Road, University Town, Peshawar',                phone: '091-9216000',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'BISP Tehsil Office Swat',                district: 'Swat',        province: 'KPK',         type: 'BISP',    address: 'Mingora, Swat',                                     phone: '0946-711234',  hours: 'Mon–Fri, 9am–5pm' },
+
+    // ── BALOCHISTAN ──
+    { name: 'BISP Provincial Office Quetta',          district: 'Quetta',      province: 'Balochistan', type: 'BISP',    address: 'Jinnah Road, near Serena Hotel, Quetta',            phone: '081-9201234',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Centre Turbat',                   district: 'Turbat',      province: 'Balochistan', type: 'Ehsaas', address: 'Main Bazaar Road, Turbat',                          phone: '0852-411234',  hours: 'Mon–Sat, 8am–4pm' },
+    { name: 'BISP District Office Gwadar',            district: 'Gwadar',      province: 'Balochistan', type: 'BISP',    address: 'Shambagh Road, Gwadar',                             phone: '0864-210345',  hours: 'Mon–Fri, 9am–5pm' },
+
+    // ── ISLAMABAD ──
+    { name: 'BISP Head Office Islamabad',             district: 'Islamabad',   province: 'ICT',         type: 'BISP',    address: 'Ehsaas Complex, G-5/2, Islamabad',                  phone: '051-9246218',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Programme Secretariat',           district: 'Islamabad',   province: 'ICT',         type: 'Ehsaas', address: 'Cabinet Block, PM Secretariat, Islamabad',          phone: '051-9246000',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'NAVTTC Head Office Islamabad',           district: 'Islamabad',   province: 'ICT',         type: 'NAVTTC', address: 'Evacuee Trust Complex, F-5/1, Islamabad',           phone: '051-9106271',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Sehat Sahulat PMU Islamabad',            district: 'Islamabad',   province: 'ICT',         type: 'Sehat',  address: 'Kohsar Block, PHIF, F-8/4, Islamabad',              phone: '051-9106500',  hours: 'Mon–Fri, 9am–5pm' },
+
+    // ── AJK ──
+    { name: 'BISP AJK Office Muzaffarabad',           district: 'Muzaffarabad',province: 'AJK',         type: 'BISP',    address: 'Near State Bank, Chattar Domel, Muzaffarabad',      phone: '05822-43210',  hours: 'Mon–Fri, 9am–5pm' },
+    { name: 'Ehsaas Centre Mirpur',                   district: 'Mirpur',      province: 'AJK',         type: 'Ehsaas', address: 'Allama Iqbal Road, Mirpur AJK',                     phone: '05827-62345',  hours: 'Mon–Sat, 8am–4pm' },
+  ];
+
+  // Provinces that have entries in OFFICES
+  const COVERED_PROVINCES = new Set(OFFICES.map(o => o.province));
+
+  const TYPE_COLORS = {
+    BISP:    { bg: 'var(--green-100)', color: 'var(--green-700)' },
+    Ehsaas: { bg: '#eff6ff',          color: '#2563eb'           },
+    Sehat:  { bg: '#fef2f2',          color: '#dc2626'           },
+    NAVTTC: { bg: '#f3e8ff',          color: '#9333ea'           },
+  };
+
+  let activeProvince = '';
+
+  // ── Tab click handler — reads data-province, no textContent matching ──
+  function filterProvince(btn) {
+    activeProvince = btn.dataset.province;
+    document.querySelectorAll('.province-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    filterOffices();
+  }
+
+  function filterOffices() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const type  = document.getElementById('typeFilter').value;
+
+    const filtered = OFFICES.filter(o => {
+      const matchSearch   = !query || o.name.toLowerCase().includes(query) || o.district.toLowerCase().includes(query) || o.address.toLowerCase().includes(query);
+      const matchType     = !type || o.type === type;
+      const matchProvince = !activeProvince || o.province === activeProvince;
+      return matchSearch && matchType && matchProvince;
+    });
+
+    document.getElementById('resultsCount').textContent =
+      filtered.length === OFFICES.length
+        ? `Showing all ${OFFICES.length} offices`
+        : `${filtered.length} office${filtered.length !== 1 ? 's' : ''} found`;
+
+    renderOffices(filtered);
+  }
+
+  function renderOffices(list) {
+    const grid = document.getElementById('officesGrid');
+
+    if (list.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results">
+          <i class="ti ti-map-pin-off"></i>
+          <p>No offices found. Try a different search or province.</p>
+          <p style="margin-top:6px;font-size:12px;direction:rtl;color:var(--text3);font-family:var(--urdu-font)">کوئی دفتر نہیں ملا — دوسرا صوبہ آزمائیں</p>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map(o => {
+      const c = TYPE_COLORS[o.type] || TYPE_COLORS.BISP;
+      return `
+      <div class="office-card">
+        <div class="office-card-header">
+          <div>
+            <div class="office-card-title">${o.name}</div>
+            <div class="office-card-district">
+              <i class="ti ti-map-pin" style="font-size:11px;color:var(--text3)"></i>
+              ${o.district}, ${o.province}
+            </div>
+          </div>
+          <span class="badge" style="background:${c.bg};color:${c.color};flex-shrink:0">${o.type}</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div class="office-detail">
+            <i class="ti ti-building"></i>
+            <span>${o.address}</span>
+          </div>
+          <div class="office-detail">
+            <i class="ti ti-clock"></i>
+            <span>${o.hours}</span>
+          </div>
+          <div class="office-detail">
+            <i class="ti ti-phone"></i>
+            <span>${o.phone}</span>
+          </div>
+        </div>
+
+        <div class="office-card-footer">
+          <a href="tel:${o.phone.replace(/[^0-9+]/g,'')}" class="btn btn-sm btn-primary" style="gap:6px">
+            <i class="ti ti-phone-call"></i> Call
+          </a>
+          <a href="https://www.google.com/maps/search/${encodeURIComponent(o.name + ' ' + o.district + ' Pakistan')}" target="_blank" class="btn btn-sm btn-outline" style="gap:6px">
+            <i class="ti ti-map"></i> Directions
+          </a>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function signOut() {
+    localStorage.removeItem('rahnuma_logged_in');
+    window.location.href = 'index.html';
+  }
+
+  // ── Init: auto-filter to user's province if set ──
+  (function init() {
+    const province = user.province || '';
+    const provinceLabel = document.getElementById('userProvince');
+
+    if (!province) {
+      renderOffices(OFFICES);
+      return;
+    }
+
+    // Province has no office data yet (e.g. GB)
+    if (!COVERED_PROVINCES.has(province)) {
+      provinceLabel.textContent = `No offices listed yet for ${province} — showing all`;
+      renderOffices(OFFICES);
+      return;
+    }
+
+    // Match tab by data-province attribute, not by visible text
+    const tab = document.querySelector(`.province-tab[data-province="${province}"]`);
+    if (tab) {
+      tab.click();
+      provinceLabel.textContent = `Showing results near ${province}`;
+    } else {
+      renderOffices(OFFICES);
+    }
+  })();
+</script>
+</body>
+</html>
