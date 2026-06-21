@@ -21,7 +21,32 @@ Millions of Pakistanis are eligible for government support programs — BISP, Eh
 
 ## 🖥️ Live Demo
 
-🔗 **[https://benefits-navigator-pakistan-production.up.railway.app/](https://benefits-navigator-pakistan-production.up.railway.app/)**
+🔗 **[https://rahnuma-production.up.railway.app/](https://rahnuma-production.up.railway.app/)**
+
+---
+
+## 🎬 Demo Video
+
+🎥 **[[Add your demo video link here — YouTube / Google Drive / Loom]]**
+
+> [[Add a 1-line description of what the video covers — e.g. "A user describes their situation in Urdu and receives tailored program recommendations in under 60 seconds."]]
+
+---
+
+## 💥 Decision Impact
+
+Before Rahnuma, a low-income family in Pakistan had to:
+- Know which programs exist (most don't)
+- Visit multiple government offices to ask about eligibility
+- Understand complex bureaucratic criteria in formal language
+- Gather documents without knowing if they'd even qualify
+
+**With Rahnuma, this changes:**
+- A widow in rural Punjab can describe her situation in Urdu and learn about BISP and Sehat Sahulat in under 2 minutes — from her phone, without visiting any office
+- A daily wage worker finds out exactly which documents to bring before making a trip to the BISP Tehsil Office, saving a wasted journey
+- A university student from a low-income family discovers the Ehsaas Undergraduate Scholarship — full tuition covered — that they never knew existed
+
+The result: **eligible people actually access the support they are entitled to**, instead of missing out because the system was too hard to navigate.
 
 ---
 
@@ -32,7 +57,7 @@ User Input (English or Urdu)
         ↓
 Flask Backend (server.py)
         ↓
-Gemini 2.5 Flash API
+Llama 3.3 70B via Groq API
   - System prompt encodes all Pakistani benefit program rules
   - Reasons through eligibility step by step
   - Asks follow-up questions progressively
@@ -96,7 +121,7 @@ The AI **never** makes a final eligibility determination. A human caseworker or 
 
 ### Prerequisites
 - Python 3.8+
-- A Gemini API key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+- A Groq API key from [console.groq.com](https://console.groq.com/)
 
 ### Setup
 
@@ -111,11 +136,11 @@ cd benefits-navigator
 pip install -r requirements.txt
 ```
 
-**3. Add your Gemini API key**
+**3. Add your Groq API key**
 
 Open `server.py` and replace line 11:
 ```python
-API_KEY = os.environ.get("GEMINI_API_KEY", "AIza...")
+API_KEY = "your_groq_api_key_here"
 ```
 
 **4. Run the server**
@@ -134,10 +159,14 @@ http://localhost:5000
 
 ```
 benefits-navigator/
-├── server.py          # Flask backend — Gemini API integration
+├── server.py          # Flask backend — Groq API integration
+├── login.py           # User authentication (register / login / session)
 ├── index.html         # Frontend chatbot UI
-├── requirements.txt   # Python dependencies
-├── render.yaml        # Render deployment config
+├── requirements.txt   # Python dependencies (flask, groq, gunicorn)
+├── favicon.ico        # App favicon
+├── favicon.png        # App favicon (PNG)
+├── apple-touch-icon.png  # iOS home screen icon
+├── AI_Architecture.png   # Architecture diagram
 └── README.md          # This file
 ```
 
@@ -147,10 +176,11 @@ benefits-navigator/
 
 | Layer | Technology |
 |---|---|
-| AI Model | Gemini 2.5 Flash (Google) |
+| AI Model | Llama 3.3 70B (via Groq) |
 | Backend | Python, Flask, Flask-CORS |
 | Frontend | HTML, CSS, JavaScript (vanilla) |
-| Deployment | Render (free tier) |
+| Auth | SQLite-based login system (login.py) |
+| Deployment | Railway |
 | Icons | Tabler Icons |
 
 ---
@@ -176,6 +206,3 @@ This tool provides **exploratory guidance only**. It is not an official governme
 - **Track:** Undergraduate
 - **Challenge:** 4 — Fix Systems People Depend On
 - **Direction:** A — Benefits Navigator
-
----
-
