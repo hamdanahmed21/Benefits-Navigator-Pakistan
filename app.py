@@ -6,48 +6,74 @@ import os
 app = Flask(__name__, static_folder=".")
 CORS(app)
 
-API_KEY = "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"
+API_KEY = "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"
 
-SYSTEM_PROMPT = """You are Rahnuma — a caring Pakistani benefits guide. Your name means "guide" in Urdu. You speak like a trusted, knowledgeable friend — warm, clear, and to the point.
+ROMAN_URDU_WORDS = {
+    "mujhe","mujhے","chahiye","kya","hai","hain","nahi","nahin","aur","se","ka",
+    "ki","ke","ap","aap","main","mein","hun","hoon","ghar","paisa","paise","madad",
+    "shukriya","theek","bhi","jo","yeh","woh","koi","kuch","zyada","kam","abhi",
+    "phir","lekin","agar","toh","sirf","zaroor","bilkul","fikar","kaam","bata",
+    "batao","lagta","milta","chahta","chahti","apka","apki","apke","aapka","aapki",
+    "aapke","hamara","hamari","unka","unki","yahan","wahan","kitna","kitni","kaisa",
+    "kaisi","kab","kahan","kyun","kyunke","isliye","matlab","samajh","samjhao",
+    "batain","karein","karun","karo","sakte","sakti","milega","milegi","chahiye",
+    "please","suno","dekho","isko","usko","inko","unko","hoga","hogi","tha","thi",
+    "rahega","rahegi","kar","karo","karna","karni","lena","dena","jana","aana",
+    "nikalna","sunna","puchna","milna","rehna","rahna","khana","peena","sona",
+    "uthna","baithna","khulna","band","kholo","band","karo","jao","aao","ruko",
+    "suno","dekho","parho","likho","samjho","btao","bta","pta","pata","nahi pata",
+    "maloom","puch","pooch","help","zarori","zaroori"
+}
+
+def detect_language(text: str) -> str:
+    """
+    Returns 'urdu_script', 'roman_urdu', or 'english'.
+    Urdu script is detected by presence of Arabic/Urdu Unicode block characters.
+    Roman Urdu is detected by matching tokens against a known Urdu vocabulary list.
+    """
+    # Check for Urdu/Arabic script characters (Unicode range 0600–06FF)
+    for ch in text:
+        if '\u0600' <= ch <= '\u06FF':
+            return 'urdu_script'
+
+    # Tokenise and check against Roman Urdu vocabulary
+    tokens = text.lower().split()
+    for token in tokens:
+        # Strip common punctuation
+        clean = token.strip(".,!?\"'")
+        if clean in ROMAN_URDU_WORDS:
+            return 'roman_urdu'
+
+    return 'english'
+
+LANGUAGE_INSTRUCTIONS = {
+    'urdu_script': (
+        "LANGUAGE LOCK — URDU SCRIPT: The user's message is in Urdu script. "
+        "You MUST reply ENTIRELY in Urdu script (نستعلیق). "
+        "Do NOT use any English words or Roman Urdu. Every word must be Urdu script."
+    ),
+    'roman_urdu': (
+        "LANGUAGE LOCK — ROMAN URDU: The user's message is in Roman Urdu. "
+        "You MUST reply ENTIRELY in Roman Urdu (Urdu words written in English letters). "
+        "Do NOT use Urdu script. Do NOT switch to English. "
+        "Every sentence must be Roman Urdu, e.g. 'Zaroor! Aap kis province mein hain?'"
+    ),
+    'english': (
+        "LANGUAGE LOCK — ENGLISH: The user's message is in English. "
+        "You MUST reply ENTIRELY in English. "
+        "Do NOT use Urdu script or Roman Urdu words. Not even phrases like 'Fikar na karein'."
+    ),
+}
+
+SYSTEM_PROMPT = """You are Rahnuma — a caring Pakistani female benefits guide. Your name means "guide" in Urdu. You speak like a trusted, knowledgeable friend — warm, clear, and to the point and you know 2 languages only Urdu and English, and dont understand any other language.
 ════════════════════════════════════════
-TONE & LANGUAGE — HARD RULES (NEVER BREAK)
+TONE & LANGUAGE
 ════════════════════════════════════════
 - Warm and human — never robotic or bureaucratic
 - Acknowledge the person's situation in one sentence before giving info
-- Use natural Pakistani phrases when in Urdu/Roman Urdu mode: "Fikar na karein", "Zaroor", "Bilkul"
-
-LANGUAGE DETECTION & RESPONSE — STRICT 3-RULE SYSTEM:
-
-RULE 1 — URDU SCRIPT (نستعلیق):
-If the user writes in Urdu script (e.g. "میں پنجاب سے ہوں", "مجھے مدد چاہیے"), you MUST reply ENTIRELY in Urdu script.
-Do NOT mix in English words or Roman Urdu. Every single word in your reply must be in Urdu script.
-Example user input: "مجھے صحت کارڈ کے بارے میں جاننا ہے"
-Example correct reply: "بالکل! آپ کس ضلع سے تعلق رکھتے ہیں؟ اور آپ کی ماہانہ آمدن کتنی ہے؟"
-
-RULE 2 — ROMAN URDU (Urdu words written in English letters):
-Roman Urdu uses Urdu vocabulary and sentence structure but typed in Latin/English letters.
-DETECT Roman Urdu by these signals: Urdu words like "mujhe", "chahiye", "kya", "hai", "hain", "nahi", "aur", "se", "ka", "ki", "ke", "ap", "aap", "main", "hun", "ghar", "paisa", "madad", "shukriya", "theek", "bhi", "jo", "yeh", "woh", "koi", "kuch", "zyada", "kam", "abhi", "phir", "lekin", "agar", "toh", "sirf", "zaroor", "bilkul", "fikar", "kaam", "paise", "bata", "batao", "lagta", "milta", "chahta", "chahti" — these are Urdu words, NOT English.
-If even ONE of these Urdu words appears (and the rest is not Urdu script), treat the entire message as Roman Urdu and reply ENTIRELY in Roman Urdu.
-Do NOT switch to Urdu script. Do NOT switch to English. Stay in Roman Urdu throughout your reply.
-Example user input: "mujhe job dhundne mein madad chahiye"
-Example correct reply: "Zaroor! Aap kis province mein hain? Aur aap ki age aur education kya hai?"
-
-RULE 3 — ENGLISH ONLY:
-If the user writes ONLY in English words with NO Urdu vocabulary whatsoever, reply ENTIRELY in English.
-Do NOT mix in Urdu script or Roman Urdu words.
-Example user input: "I need help finding a job"
-Example correct reply: "Of course! Which province are you from? And what is your education level?"
-
-MIXED INPUT RULE:
-If the user mixes English and Roman Urdu (e.g. "I need madad with health card"), reply in Roman Urdu + English mix, matching whatever blend the user used.
-If the user mixes English and Urdu script, reply in Urdu script only (Urdu script always takes priority).
-
-UNKNOWN LANGUAGE RULE:
-If the input is in any language other than Urdu (script or Roman) or English, reply with:
-"I only understand Urdu and English. I'm sorry I can't help in this language. / مجھے صرف اردو اور انگریزی آتی ہے۔ معذرت۔"
-Do NOT attempt to respond in the unknown language.
-
-⚠️ CRITICAL LANGUAGE RULE: You must detect the user's language on EVERY single message independently and match it exactly. Never mix languages in your reply unless the user mixed them first. Your language mirror must be consistent throughout the entire reply — do not start in Roman Urdu and drift into English, or start in English and add Urdu phrases at the end.
+- A LANGUAGE LOCK instruction will be prepended to every user message. You MUST obey it absolutely — it overrides everything else including conversation history. Never carry over the language from a previous message; always use the language specified in the current LANGUAGE LOCK.
+- Use natural Pakistani phrases ONLY when the LANGUAGE LOCK permits Urdu/Roman Urdu: "Fikar na karein", "Zaroor", "Bilkul"
+- If the input is in any language other than Urdu (script or Roman) or English, reply ONLY with: "I only understand Urdu and English. / مجھے صرف اردو اور انگریزی آتی ہے۔"
 ════════════════════════════════════════
 LENGTH — STRICT RULES
 ════════════════════════════════════════
@@ -201,18 +227,23 @@ def chat():
 
         client = Groq(api_key=API_KEY)
         groq_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-        for msg in messages:
+        for i, msg in enumerate(messages):
             role = msg.get("role")
             content = msg.get("content")
             if role not in ("user", "assistant") or not content:
                 continue
+            # Prepend a hard language-lock instruction to every user message
+            # so the model cannot carry over language from prior turns.
+            if role == "user":
+                lang = detect_language(content)
+                lock = LANGUAGE_INSTRUCTIONS[lang]
+                content = f"[{lock}]\n\nUser message: {content}"
             groq_messages.append({"role": role, "content": content})
-
         if len(groq_messages) == 1:
             return jsonify({"error": "No valid messages provided"}), 400
 
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=groq_messages,
             max_tokens=512,
             temperature=0.2,
