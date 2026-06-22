@@ -27,9 +27,9 @@ Millions of Pakistanis are eligible for government support programs — BISP, Eh
 
 ## 🎬 Demo Video
 
-🎥 **[[Add your demo video link here — YouTube / Google Drive / Loom]]**
+🎥 **https://drive.google.com/drive/folders/1CYM6iy4m568-zA5MJly5qey7edfw74l4**
 
-> [[Add a 1-line description of what the video covers — e.g. "A user describes their situation in Urdu and receives tailored program recommendations in under 60 seconds."]]
+> A user describes their situation in Urdu or English, and Rahnuma responds in the same language — delivering tailored program recommendations, required documents, and helpline numbers in under 60 seconds.
 
 ---
 
