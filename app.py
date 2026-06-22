@@ -6,7 +6,7 @@ import os
 app = Flask(__name__, static_folder=".")
 CORS(app)
 
-API_KEY = "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"
+API_KEY = "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"
 
 ROMAN_URDU_WORDS = {
     "mujhe","mujhے","chahiye","kya","hai","hain","nahi","nahin","aur","se","ka",
